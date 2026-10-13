@@ -27,10 +27,9 @@ tr:hover td{background:#202020}
 .url-cell{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .url-cell a{color:#64b5f6;text-decoration:none}
 .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:.78em;font-weight:bold;white-space:nowrap}
-.badge-pending{background:#3a2e00;color:#ff9800}
-.badge-indexed{background:#0a2e12;color:#4caf50}
-.badge-live{background:#0a1e2e;color:#2196f3}
-.badge-na{background:#2a2a2a;color:#888}
+.badge-live{background:#0a2e12;color:#4caf50}
+.badge-dead{background:#2e0a0a;color:#f44336}
+.badge-unknown{background:#2e2a0a;color:#ff9800}
 .btn{display:inline-block;background:transparent;border:1px solid #e94560;color:#e94560;padding:6px 14px;border-radius:20px;text-decoration:none;font-size:.8em;font-weight:bold;white-space:nowrap}
 .btn:hover{background:#e94560;color:#fff}
 .btn-blue{border-color:#2196f3;color:#2196f3}
@@ -48,103 +47,65 @@ footer{text-align:center;padding:25px;color:#666;font-size:.85em}
 <header>
 <div class="container">
 <h1>📊 Cine World — Traffic & Indexing Panel</h1>
-<p>সব পোস্টের লিংক, Google ইনডেক্স স্ট্যাটাস এক জায়গায়</p>
-<p style="margin-top:8px;font-size:.85em">Last updated: October 13, 2026</p>
+<p>সব পোস্টের লিংক, লাইভ স্ট্যাটাস এক জায়গায় — অটো আপডেট</p>
+<p style="margin-top:8px;font-size:.85em">Last updated: October 13, 2026 (auto)</p>
 </div>
 </header>
 <div class="container">
 
 <div class="stats">
-<div class="stat-card"><div class="num blue">11</div><div class="label">Total Links</div></div>
-<div class="stat-card"><div class="num green">0</div><div class="label">Indexed on Google</div></div>
-<div class="stat-card"><div class="num yellow">6</div><div class="label">Pending Index</div></div>
-<div class="stat-card"><div class="num purple">5</div><div class="label">Social / Other</div></div>
+<div class="stat-card"><div class="num blue">17</div><div class="label">Total Links</div></div>
+<div class="stat-card"><div class="num green">11</div><div class="label">🟢 Live</div></div>
+<div class="stat-card"><div class="num red">0</div><div class="label">🔴 Dead</div></div>
+<div class="stat-card"><div class="num yellow">6</div><div class="label">🟡 Unverified</div></div>
 </div>
 
-<!-- WEBSITE -->
+<div class="note"><strong>🤖 অটো-সিস্টেম:</strong> নতুন পোস্ট/ইভেন্ট/পেজ করলেই <code>traffic-links.json</code>-এ যোগ হয় আর এই প্যানেল আবার তৈরি হয়। 🟢 = লিংক লাইভ (চালু), 🔴 = লিংক নষ্ট, 🟡 = অটো-চেক ব্লক (Facebook-এর মতো সাইট বট চেক করতে দেয় না — Google বাটনে নিজে দেখো)।</div>
+
 <div class="section">
 <h2>🌐 Website Pages (cine-world)</h2>
 <p class="desc">GitHub Pages সাইটের পেজ — Search Console দিয়ে ইনডেক্সিং রিকোয়েস্ট পাঠানো হয়েছে</p>
-<table>
-<thead><tr><th>#</th><th>Page</th><th>Link</th><th>Index Status</th><th>Check</th></tr></thead>
-<tbody>
-<tr><td>1</td><td>Main Site</td><td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/" target="_blank">cine-world/</a></td><td><span class="badge badge-pending">⏳ Pending</span></td><td><a class="btn" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io%2Fcine-world%2F" target="_blank">Verify</a></td></tr>
-<tr><td>2</td><td>Blog: Best Movie Reviews</td><td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/blog/top-movie-reviews-2026.html" target="_blank">…/top-movie-reviews-2026.html</a></td><td><span class="badge badge-pending">⏳ Pending</span></td><td><a class="btn" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io%2Fcine-world%2Fblog%2Ftop-movie-reviews-2026.html" target="_blank">Verify</a></td></tr>
-<tr><td>3</td><td>Blog: Movie Night Event</td><td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/blog/hollywood-movie-night-watch-party.html" target="_blank">…/hollywood-movie-night…</a></td><td><span class="badge badge-pending">⏳ Pending</span></td><td><a class="btn" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io%2Fcine-world%2Fblog%2Fhollywood-movie-night-watch-party.html" target="_blank">Verify</a></td></tr>
-<tr><td>4</td><td>Review: 12 Angry Men</td><td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/reviews/12-angry-men-1957.html" target="_blank">…/12-angry-men-1957.html</a></td><td><span class="badge badge-pending">⏳ Pending</span></td><td><a class="btn" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io%2Fcine-world%2Freviews%2F12-angry-men-1957.html" target="_blank">Verify</a></td></tr>
-<tr><td>5</td><td>Review: Dangal</td><td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/reviews/dangal-2016.html" target="_blank">…/dangal-2016.html</a></td><td><span class="badge badge-pending">⏳ Pending</span></td><td><a class="btn" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io%2Fcine-world%2Freviews%2Fdangal-2016.html" target="_blank">Verify</a></td></tr>
-<tr><td>6</td><td>Review: Alien Romulus</td><td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/reviews/alien-romulus.html" target="_blank">…/alien-romulus.html</a></td><td><span class="badge badge-pending">⏳ Pending</span></td><td><a class="btn" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io%2Fcine-world%2Freviews%2Falien-romulus.html" target="_blank">Verify</a></td></tr>
-</tbody>
-</table>
-</div>
-
-<!-- FACEBOOK -->
-<div class="section">
+<table><thead><tr><th>#</th><th>Page</th><th>Link</th><th>Status</th><th>Google</th></tr></thead><tbody>
+<tr><td>1</td><td>Main Site</td><td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/" target="_blank">samratkhanov-tech.github.io/cine…</a></td><td><span class="badge badge-live">🟢 Live</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io/cine-world/" target="_blank">Google</a></td></tr><tr><td>2</td><td>Blog: Best Movie Reviews</td><td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/blog/top-movie-reviews-2026.html" target="_blank">samratkhanov-tech.github.io/cine…</a></td><td><span class="badge badge-live">🟢 Live</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io/cine-world/blog/top-movie-reviews-2026.html" target="_blank">Google</a></td></tr><tr><td>3</td><td>Blog: Movie Night Event</td><td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/blog/hollywood-movie-night-watch-party.html" target="_blank">samratkhanov-tech.github.io/cine…</a></td><td><span class="badge badge-live">🟢 Live</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io/cine-world/blog/hollywood-movie-night-watch-party.html" target="_blank">Google</a></td></tr><tr><td>4</td><td>Review: 12 Angry Men</td><td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/reviews/12-angry-men-1957.html" target="_blank">samratkhanov-tech.github.io/cine…</a></td><td><span class="badge badge-live">🟢 Live</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io/cine-world/reviews/12-angry-men-1957.html" target="_blank">Google</a></td></tr><tr><td>5</td><td>Review: Dangal</td><td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/reviews/dangal-2016.html" target="_blank">samratkhanov-tech.github.io/cine…</a></td><td><span class="badge badge-live">🟢 Live</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io/cine-world/reviews/dangal-2016.html" target="_blank">Google</a></td></tr><tr><td>6</td><td>Review: Alien Romulus</td><td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/reviews/alien-romulus.html" target="_blank">samratkhanov-tech.github.io/cine…</a></td><td><span class="badge badge-live">🟢 Live</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io/cine-world/reviews/alien-romulus.html" target="_blank">Google</a></td></tr><tr><td>7</td><td>Blog: Hollywood Classics Picks</td><td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/blog/hollywood-classics-movie-night-picks.html" target="_blank">samratkhanov-tech.github.io/cine…</a></td><td><span class="badge badge-live">🟢 Live</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io/cine-world/blog/hollywood-classics-movie-night-picks.html" target="_blank">Google</a></td></tr>
+</tbody></table></div><div class="section">
 <h2>📘 Facebook Posts</h2>
-<p class="desc">Cine World পেজের পোস্ট — Google এগুলো নিজে থেকে ইনডেক্স করে (সময় লাগে)</p>
-<table>
-<thead><tr><th>#</th><th>Post</th><th>Link</th><th>Google Rank</th><th>Check</th></tr></thead>
-<tbody>
-<tr><td>1</td><td>Cine World Page</td><td class="url-cell"><a href="https://www.facebook.com/1404091819443880" target="_blank">facebook.com/…/1404091819443880</a></td><td><span class="badge badge-na">🔍 Auto</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Afacebook.com+%22Cine+World%22+movie" target="_blank">Check</a></td></tr>
-<tr><td>2</td><td>Dangal Review Post</td><td class="url-cell"><a href="https://www.facebook.com/122104647801504488" target="_blank">…/122104647801504488</a></td><td><span class="badge badge-na">🔍 Auto</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Afacebook.com+Dangal+%22Cine+World%22" target="_blank">Check</a></td></tr>
-<tr><td>3</td><td>An Extremely Goofy Movie</td><td class="url-cell"><a href="https://www.facebook.com/122104839729504488" target="_blank">…/122104839729504488</a></td><td><span class="badge badge-na">🔍 Auto</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Afacebook.com+%22Extremely+Goofy+Movie%22+%22Cine+World%22" target="_blank">Check</a></td></tr>
-<tr><td>4</td><td>Mob Land Review</td><td class="url-cell"><a href="https://www.facebook.com/122104840245504488" target="_blank">…/122104840245504488</a></td><td><span class="badge badge-na">🔍 Auto</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Afacebook.com+%22Mob+Land%22+%22Cine+World%22" target="_blank">Check</a></td></tr>
-</tbody>
-</table>
-<div class="note"><strong>ℹ️</strong> Facebook পোস্ট Search Console দিয়ে সাবমিট করা যায় না। Google নিজে Facebook ক্রল করে — পাবলিক পোস্ট হলে ১-৪ সপ্তাহে ইনডেক্স হয়।</div>
-</div>
-
-<!-- EVENTBRITE -->
-<div class="section">
-<h2>🎟️ Eventbrite Event</h2>
-<p class="desc">Hollywood Movie Night ইভেন্ট — Eventbrite বড় সাইট বলে Google দ্রুত ইনডেক্স করে</p>
-<table>
-<thead><tr><th>#</th><th>Event</th><th>Link</th><th>Google Rank</th><th>Check</th></tr></thead>
-<tbody>
-<tr><td>1</td><td>Hollywood Movie Night (Live ✅)</td><td class="url-cell"><a href="https://www.eventbrite.com/e/hollywood-movie-night-best-films-watch-party-discussion-tickets-2003351144201" target="_blank">…/hollywood-movie-night-…</a></td><td><span class="badge badge-na">🔍 Auto</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Aeventbrite.com+%22Hollywood+Movie+Night%22+%22Cine+World%22" target="_blank">Check</a></td></tr>
-<tr><td>2</td><td>Organizer Profile</td><td class="url-cell"><a href="https://www.eventbrite.com/o/121856991454" target="_blank">…/o/121856991454</a></td><td><span class="badge badge-na">🔍 Auto</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Aeventbrite.com+%22Cine+World%22+organizer" target="_blank">Check</a></td></tr>
-</tbody>
-</table>
-</div>
-
-<!-- OTHER PLATFORMS -->
-<div class="section">
+<p class="desc">Cine World পেজের পোস্ট — Google নিজে Facebook ক্রল করে (১-৪ সপ্তাহ লাগতে পারে)</p>
+<table><thead><tr><th>#</th><th>Page</th><th>Link</th><th>Status</th><th>Google</th></tr></thead><tbody>
+<tr><td>1</td><td>Cine World Page</td><td class="url-cell"><a href="https://www.facebook.com/1404091819443880" target="_blank">www.facebook.com/1404091819443880</a></td><td><span class="badge badge-unknown">🟡 Unverified</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Awww.facebook.com/1404091819443880" target="_blank">Google</a></td></tr><tr><td>2</td><td>Dangal Review Post</td><td class="url-cell"><a href="https://www.facebook.com/122104647801504488" target="_blank">www.facebook.com/122104647801504…</a></td><td><span class="badge badge-unknown">🟡 Unverified</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Awww.facebook.com/122104647801504488" target="_blank">Google</a></td></tr><tr><td>3</td><td>An Extremely Goofy Movie</td><td class="url-cell"><a href="https://www.facebook.com/122104839729504488" target="_blank">www.facebook.com/122104839729504…</a></td><td><span class="badge badge-unknown">🟡 Unverified</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Awww.facebook.com/122104839729504488" target="_blank">Google</a></td></tr><tr><td>4</td><td>Mob Land Review</td><td class="url-cell"><a href="https://www.facebook.com/122104840245504488" target="_blank">www.facebook.com/122104840245504…</a></td><td><span class="badge badge-unknown">🟡 Unverified</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Awww.facebook.com/122104840245504488" target="_blank">Google</a></td></tr><tr><td>5</td><td>Welcome M1LL10NS Review</td><td class="url-cell"><a href="https://www.facebook.com/122104922235504488" target="_blank">www.facebook.com/122104922235504…</a></td><td><span class="badge badge-unknown">🟡 Unverified</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Awww.facebook.com/122104922235504488" target="_blank">Google</a></td></tr><tr><td>6</td><td>Shawshank Redemption</td><td class="url-cell"><a href="https://facebook.com/61595134660053/posts/pfbid02BbPpbTdqBYVz56CBqZq8Y87i84FVd9hj2YQ5gPQqorxP9waYC8DyWqvzmTbvhRigl/" target="_blank">facebook.com/61595134660053/post…</a></td><td><span class="badge badge-unknown">🟡 Unverified</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Afacebook.com/61595134660053/posts/pfbid02BbPpbTdqBYVz56CBqZq8Y87i84FVd9hj2YQ5gPQqorxP9waYC8DyWqvzmTbvhRigl/" target="_blank">Google</a></td></tr>
+</tbody></table></div><div class="section">
+<h2>🎟️ Eventbrite Events</h2>
+<p class="desc">Eventbrite বড় সাইট বলে Google দ্রুত ইনডেক্স করে</p>
+<table><thead><tr><th>#</th><th>Page</th><th>Link</th><th>Status</th><th>Google</th></tr></thead><tbody>
+<tr><td>1</td><td>Hollywood Movie Night (Oct 17)</td><td class="url-cell"><a href="https://www.eventbrite.com/e/hollywood-movie-night-best-films-watch-party-discussion-tickets-2003351144201" target="_blank">www.eventbrite.com/e/hollywood-m…</a></td><td><span class="badge badge-live">🟢 Live</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Awww.eventbrite.com/e/hollywood-movie-night-best-films-watch-party-discussion-tickets-2003351144201" target="_blank">Google</a></td></tr><tr><td>2</td><td>Organizer Profile</td><td class="url-cell"><a href="https://www.eventbrite.com/o/121856991454" target="_blank">www.eventbrite.com/o/121856991454</a></td><td><span class="badge badge-live">🟢 Live</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Awww.eventbrite.com/o/121856991454" target="_blank">Google</a></td></tr><tr><td>3</td><td>Hollywood Classics (Oct 24)</td><td class="url-cell"><a href="https://www.eventbrite.com/e/hollywood-classics-movie-night-legends-watch-party-discussion-tickets-2003368115964" target="_blank">www.eventbrite.com/e/hollywood-c…</a></td><td><span class="badge badge-live">🟢 Live</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Awww.eventbrite.com/e/hollywood-classics-movie-night-legends-watch-party-discussion-tickets-2003368115964" target="_blank">Google</a></td></tr>
+</tbody></table></div><div class="section">
 <h2>🌍 Other Platforms</h2>
-<p class="desc">Reddit, Medium, Quora — তুমি নিজে অ্যাকাউন্ট খুলেছ</p>
-<table>
-<thead><tr><th>Platform</th><th>Account</th><th>Link</th><th>Check</th></tr></thead>
-<tbody>
-<tr><td>Reddit</td><td>u/CineWorldMovies</td><td class="url-cell"><a href="https://www.reddit.com/user/CineWorldMovies/" target="_blank">reddit.com/user/CineWorldMovies</a></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Areddit.com+%22CineWorldMovies%22" target="_blank">Check</a></td></tr>
-<tr><td>Medium</td><td>Cine World</td><td class="url-cell"><span style="color:#888">Profile URL needed</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Amedium.com+%22Cine+World%22+movie+reviews" target="_blank">Check</a></td></tr>
-<tr><td>Quora</td><td>Cine World</td><td class="url-cell"><span style="color:#888">Profile URL needed</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Aquora.com+%22Cine+World%22+movie" target="_blank">Check</a></td></tr>
-</tbody>
-</table>
-</div>
+<p class="desc">অন্যান্য প্ল্যাটফর্মের লিংক</p>
+<table><thead><tr><th>#</th><th>Page</th><th>Link</th><th>Status</th><th>Google</th></tr></thead><tbody>
+<tr><td>1</td><td>Reddit: u/CineWorldMovies</td><td class="url-cell"><a href="https://www.reddit.com/user/CineWorldMovies/" target="_blank">www.reddit.com/user/CineWorldMov…</a></td><td><span class="badge badge-live">🟢 Live</span></td><td><a class="btn btn-blue" href="https://www.google.com/search?q=site%3Awww.reddit.com/user/CineWorldMovies/" target="_blank">Google</a></td></tr>
+</tbody></table></div>
 
-<!-- TRAFFIC -->
 <div class="section">
 <h2>📈 Real Traffic</h2>
 <div class="traffic-box">
 <h3>🔗 কোন লিংকে কত ট্রাফিক যাচ্ছে?</h3>
-<p style="color:#aaa;margin-bottom:15px">রিয়েল-টাইম ট্রাফিক দেখতে <strong style="color:#fff">Google Analytics</strong> লাগবে। এটা ফ্রি এবং ৫ মিনিটে সেটআপ করা যায়।</p>
+<p style="color:#aaa;margin-bottom:15px">রিয়েল-টাইম ভিজিটর সংখ্যা দেখতে <strong style="color:#fff">Google Analytics</strong> লাগবে (ফ্রি)।</p>
 <a class="btn" href="https://analytics.google.com/" target="_blank" style="font-size:1em;padding:12px 30px">Setup Google Analytics →</a>
 <div class="warn" style="margin-top:20px;text-align:left">
-<strong>⚠️ সৎ কথা:</strong> এই প্যানেল Google-এ <strong>ইনডেক্স</strong> হয়েছে কিনা দেখায়। কিন্তু <strong>কতজন ভিজিটর</strong> আসছে সেটা শুধু Google Analytics-ই বলতে পারে। Analytics ছাড়া ট্রাফিক সংখ্যা জানা সম্ভব নয়।
+<strong>⚠️ সৎ কথা:</strong> 🟢 মানে লিংকটা চালু আছে। কিন্তু <strong>কতজন ভিজিটর</strong> আসছে সেটা শুধু Google Analytics-ই বলতে পারে।
 </div>
 </div>
 </div>
 
 <div class="note">
-<strong>🔍 কীভাবে চেক করবে:</strong><br>
-1. প্রতিটা লিংকের পাশে <strong>Verify / Check</strong> বাটনে ক্লিক করো<br>
-2. Google সার্চ রেজাল্টে লিংকটা দেখা গেলে = <strong class="green">ইনডেক্স হয়েছে ✅</strong><br>
-3. রেজাল্ট না এলে = এখনো <strong class="yellow">পেন্ডিং ⏳</strong><br>
-4. Website-এর ৬টা পেজ Search Console-এ সাবমিট করা — সাধারণত ১-৭ দিন লাগে
+<strong>🔍 Google ইনডেক্স কীভাবে চেক করবে:</strong><br>
+1. প্রতিটা লিংকের পাশে <strong>Google</strong> বাটনে ক্লিক করো<br>
+2. সার্চ রেজাল্টে লিংকটা দেখা গেলে = <strong class="green">ইনডেক্স হয়েছে ✅</strong><br>
+3. না দেখা গেলে = এখনো <strong class="yellow">পেন্ডিং ⏳</strong>
 </div>
 
 </div>
 <footer>
-<p>© 2026 Cine World — Traffic & Indexing Panel</p>
+<p>© 2026 Cine World — Traffic & Indexing Panel (auto-generated)</p>
 </footer>
 </body>
 </html>
