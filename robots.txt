@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://samratkhanov-tech.github.io/cine-world/sitemap.xml
