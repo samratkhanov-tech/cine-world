@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Indexing Dashboard — Cine World</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d0d0d;color:#e8e8e8;font-family:'Segoe UI',Arial,sans-serif;line-height:1.6;min-height:100vh}
+.container{max-width:1000px;margin:0 auto;padding:20px}
+header{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:30px 20px;text-align:center;border-bottom:3px solid #e94560;border-radius:0 0 16px 16px}
+header h1{font-size:1.8em;color:#fff;margin-bottom:8px}
+header p{color:#aaa}
+.stats{display:flex;gap:15px;margin:25px 0;flex-wrap:wrap}
+.stat-card{flex:1;min-width:140px;background:#1a1a1a;border-radius:12px;padding:20px;text-align:center}
+.stat-card .num{font-size:2em;font-weight:bold}
+.stat-card .label{color:#999;font-size:.9em;margin-top:5px}
+.green{color:#4caf50}.yellow{color:#ff9800}.red{color:#f44336}.blue{color:#2196f3}
+table{width:100%;border-collapse:collapse;background:#1a1a1a;border-radius:12px;overflow:hidden;margin:20px 0}
+th{background:#222;padding:14px 12px;text-align:left;font-size:.9em;color:#aaa;text-transform:uppercase}
+td{padding:14px 12px;border-top:1px solid #2a2a2a;font-size:.92em}
+tr:hover td{background:#202020}
+.url-cell{max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.url-cell a{color:#64b5f6;text-decoration:none}
+.badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:.82em;font-weight:bold}
+.badge-pending{background:#3a2e00;color:#ff9800}
+.badge-indexed{background:#0a2e12;color:#4caf50}
+.badge-not{background:#2e0a0a;color:#f44336}
+.btn{display:inline-block;background:#e94560;color:#fff;padding:8px 18px;border-radius:20px;text-decoration:none;font-size:.85em;font-weight:bold}
+.btn:hover{background:#c73650}
+.btn-outline{background:transparent;border:1px solid #e94560;color:#e94560}
+.note{background:#1a1a2a;border-left:4px solid #2196f3;border-radius:8px;padding:16px;margin:20px 0;font-size:.92em;color:#bbb}
+.note strong{color:#fff}
+footer{text-align:center;padding:25px;color:#666;font-size:.85em}
+.refresh-btn{background:#2196f3;color:#fff;border:none;padding:12px 30px;border-radius:30px;font-size:1em;font-weight:bold;cursor:pointer;margin:10px 0}
+.refresh-btn:hover{background:#1976d2}
+@media(max-width:600px){.url-cell{max-width:150px}th,td{padding:10px 8px;font-size:.85em}}
+</style>
+</head>
+<body>
+<header>
+<div class="container">
+<h1>📊 Google Indexing Dashboard</h1>
+<p>Cine World — Track which pages Google has indexed</p>
+<p style="margin-top:8px;font-size:.85em">Last checked: <span id="checkDate">October 13, 2026</span></p>
+</div>
+</header>
+<div class="container">
+
+<div class="stats">
+<div class="stat-card"><div class="num blue" id="totalCount">6</div><div class="label">Total URLs</div></div>
+<div class="stat-card"><div class="num green" id="indexedCount">0</div><div class="label">Indexed</div></div>
+<div class="stat-card"><div class="num yellow" id="pendingCount">6</div><div class="label">Pending</div></div>
+</div>
+
+<div class="note">
+<strong>ℹ️ How this works:</strong> Pages were submitted to Google via Search Console. Google typically takes <strong>1–7 days</strong> to index new pages. Click <strong>"Verify"</strong> next to any URL to check its live status on Google right now.
+</div>
+
+<table>
+<thead>
+<tr><th>#</th><th>Page</th><th>URL</th><th>Status</th><th>Verify</th></tr>
+</thead>
+<tbody id="urlTable">
+<tr>
+<td>1</td>
+<td>Blog: Best Movie Reviews 2026</td>
+<td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/blog/top-movie-reviews-2026.html" target="_blank">…/blog/top-movie-reviews-2026.html</a></td>
+<td><span class="badge badge-pending">⏳ Pending</span></td>
+<td><a class="btn btn-outline" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io%2Fcine-world%2Fblog%2Ftop-movie-reviews-2026.html" target="_blank">Verify</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Review: 12 Angry Men (1957)</td>
+<td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/reviews/12-angry-men-1957.html" target="_blank">…/reviews/12-angry-men-1957.html</a></td>
+<td><span class="badge badge-pending">⏳ Pending</span></td>
+<td><a class="btn btn-outline" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io%2Fcine-world%2Freviews%2F12-angry-men-1957.html" target="_blank">Verify</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Review: Dangal (2016)</td>
+<td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/reviews/dangal-2016.html" target="_blank">…/reviews/dangal-2016.html</a></td>
+<td><span class="badge badge-pending">⏳ Pending</span></td>
+<td><a class="btn btn-outline" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io%2Fcine-world%2Freviews%2Fdangal-2016.html" target="_blank">Verify</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Review: A Minecraft Movie</td>
+<td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/reviews/a-minecraft-movie.html" target="_blank">…/reviews/a-minecraft-movie.html</a></td>
+<td><span class="badge badge-pending">⏳ Pending</span></td>
+<td><a class="btn btn-outline" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io%2Fcine-world%2Freviews%2Fa-minecraft-movie.html" target="_blank">Verify</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Review: Alien Romulus</td>
+<td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/reviews/alien-romulus.html" target="_blank">…/reviews/alien-romulus.html</a></td>
+<td><span class="badge badge-pending">⏳ Pending</span></td>
+<td><a class="btn btn-outline" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io%2Fcine-world%2Freviews%2Falien-romulus.html" target="_blank">Verify</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Blog: Hollywood Movie Night Event</td>
+<td class="url-cell"><a href="https://samratkhanov-tech.github.io/cine-world/blog/hollywood-movie-night-watch-party.html" target="_blank">…/blog/hollywood-movie-night-watch-party.html</a></td>
+<td><span class="badge badge-pending">⏳ Pending</span></td>
+<td><a class="btn btn-outline" href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io%2Fcine-world%2Fblog%2Fhollywood-movie-night-watch-party.html" target="_blank">Verify</a></td>
+</tr>
+</tbody>
+</table>
+
+<div class="note">
+<strong>🔍 Manual check:</strong> Click "Verify" to open a Google <code>site:</code> search for that URL. If the page appears in results → it's <strong class="green">indexed</strong>. If no results → still <strong class="yellow">pending</strong>.
+<br><br>
+<strong>📋 All submitted URLs at once:</strong> <a href="https://www.google.com/search?q=site%3Asamratkhanov-tech.github.io" target="_blank" style="color:#64b5f6">Check all indexed pages →</a>
+</div>
+
+<center>
+<button class="refresh-btn" onclick="location.reload()">🔄 Refresh Dashboard</button>
+<p style="color:#666;font-size:.85em;margin-top:10px">Status updates when pages get indexed (typically 1–7 days after submission)</p>
+</center>
+
+</div>
+<footer>
+<p>© 2026 Cine World — Indexing Dashboard</p>
+</footer>
+</body>
+</html>
