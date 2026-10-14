@@ -51,13 +51,38 @@ footer{text-align:center;color:#5a6378;font-size:12px;padding:20px}
 </div>
 
 <div class="card">
-<h2>💰 এড কোড <span class="sub">(একবার বসালেই সেভ থাকবে)</span></h2>
-<label>⬆️ উপরের এড <span class="saved" id="svTop"></span></label>
-<textarea id="adTop" placeholder="এড কোড পেস্ট করো..."></textarea>
-<label>🔲 মাঝের এড <span class="saved" id="svMid"></span></label>
-<textarea id="adMid" placeholder="এড কোড পেস্ট করো..."></textarea>
-<label>⬇️ নিচের এড <span class="saved" id="svBot"></span></label>
-<textarea id="adBottom" placeholder="এড কোড পেস্ট করো..."></textarea>
+<h2>💰 এড কোড <span class="sub">(দুইটা নেটওয়ার্ক — একবার বসালেই সেভ থাকবে)</span></h2>
+
+<label style="color:#e8eaf0">কোন নেটওয়ার্কের এড পোস্টে যাবে?</label>
+<div style="display:flex;gap:10px;margin:8px 0 16px;flex-wrap:wrap">
+<label style="flex:1;min-width:150px;background:#0d1119;border:2px solid #2a3350;border-radius:10px;padding:12px;cursor:pointer;display:flex;align-items:center;gap:8px;margin:0">
+<input type="radio" name="net" value="1" checked style="width:18px;height:18px;accent-color:#e50914"> <b>Network 1</b></label>
+<label style="flex:1;min-width:150px;background:#0d1119;border:2px solid #2a3350;border-radius:10px;padding:12px;cursor:pointer;display:flex;align-items:center;gap:8px;margin:0">
+<input type="radio" name="net" value="2" style="width:18px;height:18px;accent-color:#e50914"> <b>Network 2</b></label>
+<label style="flex:1;min-width:150px;background:#0d1119;border:2px solid #2a3350;border-radius:10px;padding:12px;cursor:pointer;display:flex;align-items:center;gap:8px;margin:0">
+<input type="radio" name="net" value="both" style="width:18px;height:18px;accent-color:#e50914"> <b>দুটো ঘুরিয়ে 🔄</b></label>
+</div>
+
+<div style="border:1px solid #2a4a2a;border-radius:12px;padding:14px;margin-bottom:14px">
+<h3 style="color:#5dff8f;font-size:15px;margin-bottom:6px">📡 Network 1</h3>
+<label>⬆️ উপরের এড <span class="saved" id="svN1T"></span></label>
+<textarea id="n1_top" placeholder="Network 1 উপরের এড কোড..."></textarea>
+<label>🔲 মাঝের এড <span class="saved" id="svN1M"></span></label>
+<textarea id="n1_mid" placeholder="Network 1 মাঝের এড কোড..."></textarea>
+<label>⬇️ নিচের এড <span class="saved" id="svN1B"></span></label>
+<textarea id="n1_bot" placeholder="Network 1 নিচের এড কোড..."></textarea>
+</div>
+
+<div style="border:1px solid #4a2a2a;border-radius:12px;padding:14px">
+<h3 style="color:#ff9b9b;font-size:15px;margin-bottom:6px">📡 Network 2</h3>
+<label>⬆️ উপরের এড <span class="saved" id="svN2T"></span></label>
+<textarea id="n2_top" placeholder="Network 2 উপরের এড কোড..."></textarea>
+<label>🔲 মাঝের এড <span class="saved" id="svN2M"></span></label>
+<textarea id="n2_mid" placeholder="Network 2 মাঝের এড কোড..."></textarea>
+<label>⬇️ নিচের এড <span class="saved" id="svN2B"></span></label>
+<textarea id="n2_bot" placeholder="Network 2 নিচের এড কোড..."></textarea>
+</div>
+
 <p class="hint">💾 লিখলেই অটো-সেভ — পেজ বন্ধ করলেও মুছবে না। <a href="#" onclick="clearAds();return false">সব মুছে ফেলো</a></p>
 </div>
 
@@ -98,27 +123,46 @@ SITES.forEach(s=>{
   box.appendChild(d);
 });
 const v=id=>document.getElementById(id).value.trim();
-const ADS=['adTop','adMid','adBottom'];
-ADS.forEach(id=>{
+// ===== দুই নেটওয়ার্কের এড কোড অটো-সেভ =====
+const FIELDS=['n1_top','n1_mid','n1_bot','n2_top','n2_mid','n2_bot'];
+const SVLBL={n1_top:'svN1T',n1_mid:'svN1M',n1_bot:'svN1B',n2_top:'svN2T',n2_mid:'svN2M',n2_bot:'svN2B'};
+FIELDS.forEach(id=>{
   const sv=localStorage.getItem('cw_'+id);
   if(sv)document.getElementById(id).value=sv;
   document.getElementById(id).addEventListener('input',e=>{
     localStorage.setItem('cw_'+id,e.target.value);
-    document.getElementById({adTop:'svTop',adMid:'svMid',adBottom:'svBot'}[id]).textContent='✅ সেভড';
+    document.getElementById(SVLBL[id]).textContent='✅ সেভড';
   });
 });
-function clearAds(){ADS.forEach(id=>{localStorage.removeItem('cw_'+id);document.getElementById(id).value=''});alert('মুছে ফেলা হয়েছে');}
+// সিলেক্টেড নেটওয়ার্ক মনে রাখো
+const netRadios=document.querySelectorAll('input[name=net]');
+const savedNet=localStorage.getItem('cw_net');
+if(savedNet)netRadios.forEach(r=>{r.checked=(r.value===savedNet)});
+netRadios.forEach(r=>r.addEventListener('change',()=>localStorage.setItem('cw_net',document.querySelector('input[name=net]:checked').value)));
+function clearAds(){FIELDS.forEach(id=>{localStorage.removeItem('cw_'+id);document.getElementById(id).value=''});alert('মুছে ফেলা হয়েছে');}
+function activeNet(){return document.querySelector('input[name=net]:checked').value}
+function netAds(){
+  const n=activeNet();
+  if(n==='1')return{label:'Network 1',top:v('n1_top'),mid:v('n1_mid'),bot:v('n1_bot')};
+  if(n==='2')return{label:'Network 2',top:v('n2_top'),mid:v('n2_mid'),bot:v('n2_bot')};
+  return{label:'দুটো ঘুরিয়ে (Rotate)',
+    top:(v('n1_top')||'')+'\n--- rotate ---\n'+(v('n2_top')||''),
+    mid:(v('n1_mid')||'')+'\n--- rotate ---\n'+(v('n2_mid')||''),
+    bot:(v('n1_bot')||'')+'\n--- rotate ---\n'+(v('n2_bot')||'')};
+}
 function gen(){
   const sel=SITES.filter(s=>document.getElementById('s_'+s.id).checked);
   if(!sel.length){alert('কমপক্ষে ১টা সাইট সিলেক্ট করো!');return}
   const site='https://samratkhanov-tech.github.io/cine-world/';
+  const na=netAds();
   document.getElementById('cmd').textContent=
 `🎬 POST
 সাইট: ${sel.map(s=>s.name+(s.ad?' [এডসহ]':'')+(s.linkRule==='comment'?' [লিংক কমেন্টে]':' [লিংক বাটনে]')).join(', ')}
 ওয়েবসাইট লিংক (প্রতিটা পোস্টে): ${site}
-⬆️ উপরের এড: ${v('adTop')||'-'}
-🔲 মাঝের এড: ${v('adMid')||'-'}
-⬇️ নিচের এড: ${v('adBottom')||'-'}`;
+📡 এড নেটওয়ার্ক: ${na.label}
+⬆️ উপরের এড: ${na.top||'-'}
+🔲 মাঝের এড: ${na.mid||'-'}
+⬇️ নিচের এড: ${na.bot||'-'}`;
 }
 function copyCmd(){navigator.clipboard.writeText(document.getElementById('cmd').textContent).then(()=>alert('কপি হয়েছে! চ্যাটে পাঠাও ✅'))}
 </script>
