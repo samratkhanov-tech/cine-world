@@ -34,6 +34,9 @@ header p{color:#9aa3b8;margin-top:6px}
 .bchk{width:20px;height:20px;flex-shrink:0;accent-color:#7b5cff;cursor:pointer}
 #bpBatchBar{display:none;background:#1a1430;border:1px solid #7b5cff;border-radius:12px;padding:10px 14px;margin:10px 0;font-size:14px}
 .count-pill{display:inline-block;background:#232c44;border-radius:20px;padding:2px 10px;font-size:12px;margin:2px;color:#ffb35c}
+.posted-badge{display:inline-block;background:#14240f;color:#3fae5a;border:1px solid #3fae5a;border-radius:20px;padding:2px 10px;font-size:11px;margin-left:6px}
+.mv-row.posted{opacity:.55}
+#postedToggle{font-size:13px;color:#8b93a9;cursor:pointer;margin-left:8px;text-decoration:underline}
 .card{background:rgba(18,23,36,.92);border:1px solid #232c44;border-radius:16px;padding:22px;margin:18px 0;box-shadow:0 8px 30px rgba(0,0,0,.4)}
 .card h2{font-size:18px;color:#ffb35c;margin-bottom:4px}
 .card .sub{font-size:13px;color:#8b93a9;margin-bottom:12px}
@@ -73,7 +76,7 @@ footer{text-align:center;color:#5a6378;font-size:12px;padding:20px}
 <div class="card">
 <h2>📝 Blogger → Facebook ক্রস-পোস্ট</h2>
 <p class="sub">Blogger 🔗 Facebook কানেক্ট — যেকোনো পোস্টের <b>FB কমান্ড</b> কপি করে চ্যাটে পাঠাও, Muse সরাসরি Facebook Page-এ পোস্ট করে দেবে (Blogger লিংক প্রথম কমেন্টে)। পোস্ট লিস্ট ব্লগ থেকে লাইভ আসে। <b>☑️ টিক</b> দিয়ে একসাথে অনেকগুলোর ব্যাচ কমান্ডও নিতে পারো।</p>
-<div id="bpBatchBar">📦 ব্যাচ: <b id="bpBatchCount">০</b>টা পোস্ট <button class="mini" onclick="copyBpBatchCmd()" style="margin-left:8px">📋 ব্যাচ FB কমান্ড</button> <button class="mini ghost2" onclick="clearBpBatch()">✖</button></div>
+<div id="bpBatchBar">📦 ব্যাচ: <b id="bpBatchCount">০</b>টা পোস্ট <button class="mini" onclick="copyBpBatchCmd()" style="margin-left:8px">📋 ব্যাচ FB কমান্ড</button><button class="mini" onclick="markBpBatchPosted()" style="border-color:#3fae5a;background:#3fae5a">✅ পোস্ট সম্পন্ন</button> <button class="mini ghost2" onclick="clearBpBatch()">✖</button></div>
 <div id="bpList"><p class="sub">⏳ Blogger পোস্ট লোড হচ্ছে...</p></div>
 </div>
 
@@ -128,7 +131,7 @@ footer{text-align:center;color:#5a6378;font-size:12px;padding:20px}
 <div class="card">
 <h2>📝 কমান্ড তৈরি করো</h2>
 <p class="sub">কপি করে Muse-কে চ্যাটে পাঠাও + মুভির নাম বলো</p>
-<div id="selMovieBar">🎬 মুভি: <b id="selMovieName"></b> <a href="#" onclick="clearMovie();return false" style="color:#ff8a8a;font-size:13px">✖ বাতিল</a></div>
+<div id="selMovieBar">🎬 মুভি: <b id="selMovieName"></b> <a href="#" onclick="clearMovie();return false" style="color:#ff8a8a;font-size:13px">✖ বাতিল</a> <button class="mini" onclick="markSinglePosted()" style="margin-left:8px">✅ পোস্ট হয়েছে</button></div>
 <button class="main" onclick="gen()">✨ পোস্ট কমান্ড তৈরি করো</button>
 <div id="cmd">এখানে কমান্ড আসবে...</div>
 <button class="ghost" onclick="copyCmd()">📋 কপি করো</button>
@@ -139,10 +142,10 @@ footer{text-align:center;color:#5a6378;font-size:12px;padding:20px}
 
 <div class="wrap" style="margin-top:0">
 <div class="card">
-<h2>🎬 সব মুভি <span id="mvCount" style="font-size:13px;color:#8b93a9"></span></h2>
+<h2>🎬 সব মুভি <span id="mvCount" style="font-size:13px;color:#8b93a9"></span><span id="postedToggle" onclick="toggleShowPosted()"></span></h2>
 <p class="sub">একটার পর একটা — সার্চ করে মুভি বাছো। <b>✅ সিলেক্ট</b> = একটা মুভির কমান্ড | <b>☑️ টিক</b> = ব্যাচে যোগ (একসাথে অনেকগুলো)।</p>
 <div id="batchBar">📦 ব্যাচ: <b id="batchCount">০</b>টা মুভি
-<div class="row"><button class="mini" onclick="copyBatchCmd()">📋 ব্যাচ কমান্ড কপি</button><button class="mini ghost2" onclick="clearBatch()">✖ খালি করো</button></div>
+<div class="row"><button class="mini" onclick="copyBatchCmd()">📋 ব্যাচ কমান্ড কপি</button><button class="mini" onclick="markBatchPosted()" style="border-color:#3fae5a;background:#3fae5a">✅ পোস্ট সম্পন্ন</button><button class="mini ghost2" onclick="clearBatch()">✖ খালি করো</button></div>
 <div class="row" id="batchSiteCounts" style="font-size:13px;color:#9aa3b8"></div>
 </div>
 <input class="srch" id="mvSearch" placeholder="🔍 মুভির নাম লিখে খুঁজো..." oninput="renderMovies()">
@@ -282,6 +285,29 @@ function selectMovie(t,y){
 }
 function selectMovieByIdx(i){const m=lastRendered[i];if(m)selectMovie(m.t,m.y||'')}
 function toggleBatchIdx(i,on){const m=lastRendered[i];if(m)toggleBatch(m.t+'|'+(m.y||''),m.t,m.y||'',on)}
+// ===== ✅ পোস্ট-হওয়া ট্র্যাকিং (তালিকা থেকে অটো আউট) =====
+let postedKeys=new Set();
+try{postedKeys=new Set(JSON.parse(localStorage.getItem('cw_posted_v1')||'[]'))}catch(e){}
+let showPosted=false;
+function savePosted(){try{localStorage.setItem('cw_posted_v1',JSON.stringify([...postedKeys]))}catch(e){}}
+function movieKey(t,y){return t+'|'+(y||'')}
+function updatePostedToggle(){
+  const el=document.getElementById('postedToggle');
+  if(!el)return;
+  el.textContent=postedKeys.size?(showPosted?'🙈 পোস্ট হওয়া লুকাও':'👁️ পোস্ট হওয়া দেখাও ('+postedKeys.size+'টা)'):'';
+}
+function toggleShowPosted(){showPosted=!showPosted;renderMovies();updatePostedToggle()}
+function markBatchPosted(){
+  if(!batchList.length){alert('ব্যাচে কোনো মুভি নেই!');return}
+  batchList.forEach(b=>postedKeys.add(movieKey(b.t,b.y)));
+  savePosted();clearBatch();updatePostedToggle();
+  alert('✅ ব্যাচের মুভিগুলো তালিকা থেকে সরে গেছে!');
+}
+function markSinglePosted(){
+  if(!selectedMovie)return;
+  postedKeys.add(movieKey(selectedMovie.t,selectedMovie.y));
+  savePosted();clearMovie();renderMovies();updatePostedToggle();
+}
 function clearMovie(){
   selectedMovie=null;
   document.getElementById('selMovieBar').style.display='none';
@@ -293,13 +319,16 @@ function renderMovies(){
   let arr;
   if(q){arr=MOVIE_IDX.filter(m=>m.t.toLowerCase().includes(q)).slice(0,200)}
   else{arr=MOVIE_IDX.slice(0,60)}
-  document.getElementById('mvCount').textContent='('+MOVIE_IDX.length.toLocaleString()+'টা'+(q?' • '+arr.length+'টা পাওয়া গেছে':'')+')';
+  if(!showPosted)arr=arr.filter(m=>!postedKeys.has(movieKey(m.t,m.y)));
+  document.getElementById('mvCount').textContent='('+MOVIE_IDX.length.toLocaleString()+'টা'+(q?' • '+arr.length+'টা পাওয়া গেছে':'')+(postedKeys.size?' • ✅ '+postedKeys.size+'টা পোস্ট হয়েছে':'')+')';
   lastRendered=arr;
   box.innerHTML=arr.map((m,i)=>{
-    const key=m.t+'|'+(m.y||'');
+    const key=movieKey(m.t,m.y);
     const inBatch=batchKeys.has(key);
-    return `<div class="mv-row"><input type="checkbox" class="bchk" ${inBatch?'checked':''} onchange="toggleBatchIdx(${i},this.checked)" title="ব্যাচে যোগ"><img loading="lazy" src="${escH(m.p)}" alt=""><div class="inf"><div class="t">${escH(m.t)}</div><div class="y">${escH(m.y||'')}</div></div><button class="mini" onclick="selectMovieByIdx(${i})">✅ সিলেক্ট</button></div>`;
+    const isPosted=postedKeys.has(key);
+    return `<div class="mv-row${isPosted?' posted':''}"><input type="checkbox" class="bchk" ${inBatch?'checked':''} ${isPosted?'disabled':''} onchange="toggleBatchIdx(${i},this.checked)" title="ব্যাচে যোগ"><img loading="lazy" src="${escH(m.p)}" alt=""><div class="inf"><div class="t">${escH(m.t)}${isPosted?'<span class="posted-badge">✅ পোস্ট হয়েছে</span>':''}</div><div class="y">${escH(m.y||'')}</div></div>${isPosted?'':'<button class="mini" onclick="selectMovieByIdx('+i+')">✅ সিলেক্ট</button>'}</div>`;
   }).join('')||'<p class="sub">কিছু পাওয়া যায়নি</p>';
+  updatePostedToggle();
 }
 // ===== 📦 ব্যাচ সিস্টেম (সাইট × পোস্ট সংখ্যা) =====
 const batchKeys=new Set();   // "title|year"
@@ -346,22 +375,44 @@ function findMovie(name,year){
 }
 const bpPosts=[];   // [{name,year,poster,link}]
 const bpBatchKeys=new Set();
+let bpPosted=new Set();
+try{bpPosted=new Set(JSON.parse(localStorage.getItem('cw_bp_posted_v1')||'[]'))}catch(e){}
+function saveBpPosted(){try{localStorage.setItem('cw_bp_posted_v1',JSON.stringify([...bpPosted]))}catch(e){}}
+function markBpBatchPosted(){
+  if(!bpBatchKeys.size){alert('ব্যাচে কোনো পোস্ট নেই!');return}
+  [...bpBatchKeys].forEach(idx=>{if(bpPosts[idx])bpPosted.add(bpPosts[idx].link)});
+  saveBpPosted();clearBpBatch();
+  // তালিকা রিফ্রেশ — পোস্ট হওয়াগুলো বাদ
+  const kept=bpPosts.filter(p=>!bpPosted.has(p.link));
+  bpPosts.length=0;kept.forEach(p=>bpPosts.push(p));
+  bpBatchKeys.clear();renderBpList();updateBpBatchBar();
+  alert('✅ পোস্ট হওয়াগুলো তালিকা থেকে সরে গেছে!');
+}
+function renderBpList(){
+  const box=document.getElementById('bpList');
+  if(!bpPosts.length){box.innerHTML='<p class="sub">সব পোস্ট ক্রস-পোস্ট হয়ে গেছে! 🎉</p>';return}
+  box.innerHTML=bpPosts.map((p,idx)=>{
+    const cmd=`🎬 FB-CROSSPOST\nMovie: ${p.name}${p.year?' ('+p.year+')':''}\nPoster: ${p.poster}\nBlogger: ${p.link}`;
+    return `<div class="bp-row"><input type="checkbox" class="bchk" onchange="toggleBpBatch(${idx},this.checked)" title="ব্যাচে যোগ">${p.poster?`<img loading="lazy" src="${escH(p.poster)}" alt="">`:''}<div class="inf"><div class="t">${escH(p.title)}</div><div class="u">📅 ${escH(p.pub)} • <a href="${escH(p.link)}" target="_blank">Blogger লিংক ↗</a></div></div><button class="mini" data-cmd="${escH(cmd)}" onclick="copyBpCmd(this)">📋 FB কমান্ড</button></div>`;
+  }).join('');
+}
 function bloggerCb(data){
   const box=document.getElementById('bpList');
   const entries=(data.feed&&data.feed.entry)||[];
   if(!entries.length){box.innerHTML='<p class="sub">কোনো পোস্ট পাওয়া যায়নি</p>';return}
   bpPosts.length=0;
-  box.innerHTML=entries.map((e,idx)=>{
+  entries.forEach(e=>{
     const title=e.title.$t;
     const link=(e.link.find(l=>l.rel==='alternate')||{}).href||'#';
     const pub=(e.published&&e.published.$t||'').slice(0,10);
+    if(bpPosted.has(link))return; // পোস্ট হয়ে গেছে — তালিকায় আনবো না
     const {name,year}=parseBloggerTitle(title);
     const mv=findMovie(name,year);
     const poster=mv?mv.p:'';
-    bpPosts.push({name,year,poster,link});
-    const cmd=`🎬 FB-CROSSPOST\nMovie: ${name}${year?' ('+year+')':''}\nPoster: ${poster}\nBlogger: ${link}`;
-    return `<div class="bp-row"><input type="checkbox" class="bchk" ${bpBatchKeys.has(idx)?'checked':''} onchange="toggleBpBatch(${idx},this.checked)" title="ব্যাচে যোগ">${poster?`<img loading="lazy" src="${escH(poster)}" alt="">`:''}<div class="inf"><div class="t">${escH(title)}</div><div class="u">📅 ${escH(pub)} • <a href="${escH(link)}" target="_blank">Blogger লিংক ↗</a></div></div><button class="mini" data-cmd="${escH(cmd)}" onclick="copyBpCmd(this)">📋 FB কমান্ড</button></div>`;
-  }).join('');
+    bpPosts.push({name,year,poster,link,title,pub});
+  });
+  bpBatchKeys.clear();
+  renderBpList();
   updateBpBatchBar();
 }
 function toggleBpBatch(idx,on){
