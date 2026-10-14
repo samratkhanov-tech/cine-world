@@ -60,7 +60,7 @@ footer{text-align:center;color:#5a6378;font-size:12px;padding:20px}
 <label style="flex:1;min-width:150px;background:#0d1119;border:2px solid #2a3350;border-radius:10px;padding:12px;cursor:pointer;display:flex;align-items:center;gap:8px;margin:0">
 <input type="radio" name="net" value="2" style="width:18px;height:18px;accent-color:#e50914"> <b>Network 2</b></label>
 <label style="flex:1;min-width:150px;background:#0d1119;border:2px solid #2a3350;border-radius:10px;padding:12px;cursor:pointer;display:flex;align-items:center;gap:8px;margin:0">
-<input type="radio" name="net" value="both" style="width:18px;height:18px;accent-color:#e50914"> <b>দুটো ঘুরিয়ে 🔄</b></label>
+<input type="radio" name="net" value="both" style="width:18px;height:18px;accent-color:#e50914"> <b>🔄 একটার পর একটা</b></label>
 </div>
 
 <div style="border:1px solid #2a4a2a;border-radius:12px;padding:14px;margin-bottom:14px">
@@ -141,28 +141,33 @@ if(savedNet)netRadios.forEach(r=>{r.checked=(r.value===savedNet)});
 netRadios.forEach(r=>r.addEventListener('change',()=>localStorage.setItem('cw_net',document.querySelector('input[name=net]:checked').value)));
 function clearAds(){FIELDS.forEach(id=>{localStorage.removeItem('cw_'+id);document.getElementById(id).value=''});alert('মুছে ফেলা হয়েছে');}
 function activeNet(){return document.querySelector('input[name=net]:checked').value}
+function rotSnippet(slot,code1,code2){
+  // একটার পর একটা ঘুরবে — ৩০ সেকেন্ড পর পর বদলাবে
+  return `<div class="cw-adrot" data-slot="${slot}"></div>\n<script>(function(){\nvar A=[${JSON.stringify(code1)},${JSON.stringify(code2)}];\nvar i=Math.floor(Date.now()/30000)%2;\nvar d=document.currentScript.previousElementSibling;\nif(d)d.innerHTML=A[i];\n})();<\/script>`;
+}
 function netAds(){
   const n=activeNet();
-  if(n==='1')return{label:'Network 1',top:v('n1_top'),mid:v('n1_mid'),bot:v('n1_bot')};
-  if(n==='2')return{label:'Network 2',top:v('n2_top'),mid:v('n2_mid'),bot:v('n2_bot')};
-  return{label:'দুটো ঘুরিয়ে (Rotate)',
-    top:(v('n1_top')||'')+'\n--- rotate ---\n'+(v('n2_top')||''),
-    mid:(v('n1_mid')||'')+'\n--- rotate ---\n'+(v('n2_mid')||''),
-    bot:(v('n1_bot')||'')+'\n--- rotate ---\n'+(v('n2_bot')||'')};
+  if(n==='1')return{label:'Network 1',mode:'single',top:v('n1_top'),mid:v('n1_mid'),bot:v('n1_bot')};
+  if(n==='2')return{label:'Network 2',mode:'single',top:v('n2_top'),mid:v('n2_mid'),bot:v('n2_bot')};
+  return{label:'ROTATE — একটার পর একটা (N1 → N2 → N1 ...)',mode:'rotate',
+    top:rotSnippet('top',v('n1_top'),v('n2_top')),
+    mid:rotSnippet('mid',v('n1_mid'),v('n2_mid')),
+    bot:rotSnippet('bot',v('n1_bot'),v('n2_bot'))};
 }
 function gen(){
   const sel=SITES.filter(s=>document.getElementById('s_'+s.id).checked);
   if(!sel.length){alert('কমপক্ষে ১টা সাইট সিলেক্ট করো!');return}
   const site='https://samratkhanov-tech.github.io/cine-world/';
   const na=netAds();
+  const adBlock = na.mode==='rotate'
+    ? `🔄 রোটেশন স্ক্রিপ্ট (এড একটার পর একটা ঘুরবে):\n${na.top}\n${na.mid}\n${na.bot}`
+    : `⬆️ উপরের এড: ${na.top||'-'}\n🔲 মাঝের এড: ${na.mid||'-'}\n⬇️ নিচের এড: ${na.bot||'-'}`;
   document.getElementById('cmd').textContent=
 `🎬 POST
 সাইট: ${sel.map(s=>s.name+(s.ad?' [এডসহ]':'')+(s.linkRule==='comment'?' [লিংক কমেন্টে]':' [লিংক বাটনে]')).join(', ')}
 ওয়েবসাইট লিংক (প্রতিটা পোস্টে): ${site}
 📡 এড নেটওয়ার্ক: ${na.label}
-⬆️ উপরের এড: ${na.top||'-'}
-🔲 মাঝের এড: ${na.mid||'-'}
-⬇️ নিচের এড: ${na.bot||'-'}`;
+${adBlock}`;
 }
 function copyCmd(){navigator.clipboard.writeText(document.getElementById('cmd').textContent).then(()=>alert('কপি হয়েছে! চ্যাটে পাঠাও ✅'))}
 </script>
