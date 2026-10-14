@@ -159,7 +159,11 @@ function clearAds(){FIELDS.forEach(id=>{localStorage.removeItem('cw_'+id);docume
 function activeNet(){return document.querySelector('input[name=net]:checked').value}
 function codes(net){const o={};const F=net==='1'?N1:N2;F.fields.forEach(f=>{o[f]=v('n'+net+'_'+f)});return o}
 function rotSnippet(slot,code1,code2){
-  // একটার পর একটা ঘুরবে — ৩০ সেকেন্ড পর পর বদলাবে
+  // শুধু ভরা সাইজই যাবে — খালি থাকলে বাদ
+  if(!code1 && !code2) return '';
+  if(!code1) return code2;
+  if(!code2) return code1;
+  // দুটোই আছে → একটার পর একটা ঘুরবে (৩০ সেকেন্ড পর পর)
   return `<div class="cw-adrot" data-slot="${slot}"></div>\n<script>(function(){\nvar A=[${JSON.stringify(code1)},${JSON.stringify(code2)}];\nvar i=Math.floor(Date.now()/30000)%2;\nvar d=document.currentScript.previousElementSibling;\nif(d)d.innerHTML=A[i];\n})();<\/script>`;
 }
 function netAds(){
@@ -176,19 +180,38 @@ function netAds(){
 function fmtCodes(net,c){
   return net.fields.map(f=>`  ${net.labels[f]}: ${c[f]||'-'}`).join('\n');
 }
+function filledSizes(net,c){
+  // শুধু যেগুলোতে কোড বসানো আছে
+  return net.fields.filter(f=>c[f]).map(f=>net.labels[f]);
+}
 function gen(){
   const sel=SITES.filter(s=>document.getElementById('s_'+s.id).checked);
   if(!sel.length){alert('কমপক্ষে ১টা সাইট সিলেক্ট করো!');return}
   const site='https://samratkhanov-tech.github.io/cine-world/';
   const na=netAds();
-  const adBlock = na.mode==='rotate'
-    ? `🔄 রোটেশন স্ক্রিপ্ট — উপরে=Adsterra 728×90↔Monetag Vignette, মাঝে=Adsterra 300×250↔Monetag In-Page Push, নিচে=Adsterra 320×50↔Monetag Multitag (৩০ সেকেন্ড পর পর ঘুরবে):\n${na.top}\n${na.mid}\n${na.bot}\n\n📦 সব কোড (রেফারেন্স):\nAdsterra:\n${fmtCodes(N1,na.c1)}\nMonetag:\n${fmtCodes(N2,na.c2)}`
-    : `📦 কোড:\n${fmtCodes(na.net,na.c)}`;
+  let adBlock, filledLine;
+  if(na.mode==='rotate'){
+    const slots=[];
+    if(na.top)slots.push('⬆️ উপরে');
+    if(na.mid)slots.push('🔲 মাঝে');
+    if(na.bot)slots.push('⬇️ নিচে');
+    filledLine=`✅ পোস্টে যাবে (ভরা স্লট): ${slots.join(', ')||'কোনোটাই না'}`;
+    const rotParts=[];
+    if(na.top)rotParts.push(na.top);
+    if(na.mid)rotParts.push(na.mid);
+    if(na.bot)rotParts.push(na.bot);
+    adBlock=`🔄 রোটেশন স্ক্রিপ্ট — উপরে=Adsterra 728×90↔Monetag Vignette, মাঝে=Adsterra 300×250↔Monetag In-Page Push, নিচে=Adsterra 320×50↔Monetag Multitag (৩০ সেকেন্ড পর পর ঘুরবে):\n${rotParts.join('\n')||'(খালি)'}\n\n📦 সব কোড (রেফারেন্স):\nAdsterra:\n${fmtCodes(N1,na.c1)}\nMonetag:\n${fmtCodes(N2,na.c2)}`;
+  } else {
+    const filled=filledSizes(na.net,na.c);
+    filledLine=`✅ পোস্টে যাবে (ভরা সাইজ): ${filled.join(', ')||'কোনোটাই না'}`;
+    adBlock=`📦 কোড:\n${fmtCodes(na.net,na.c)}`;
+  }
   document.getElementById('cmd').textContent=
 `🎬 POST
 সাইট: ${sel.map(s=>s.name+(s.ad?' [এডসহ]':'')+(s.linkRule==='comment'?' [লিংক কমেন্টে]':' [লিংক বাটনে]')).join(', ')}
 ওয়েবসাইট লিংক (প্রতিটা পোস্টে): ${site}
 📡 এড নেটওয়ার্ক: ${na.label}
+${filledLine}
 ${adBlock}`;
 }
 function copyCmd(){navigator.clipboard.writeText(document.getElementById('cmd').textContent).then(()=>alert('কপি হয়েছে! চ্যাটে পাঠাও ✅'))}
