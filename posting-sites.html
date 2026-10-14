@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Where We Post Reviews — Cine World</title>
+<meta name="description" content="All platforms where Cine World publishes movie reviews — GitHub Pages, Blogger, Facebook and more."/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://samratkhanov-tech.github.io/cine-world/posting-sites.html"/>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0d14;color:#e8eaf0;font-family:'Inter',Arial,sans-serif;line-height:1.7}
+.wrap{max-width:860px;margin:0 auto;padding:40px 20px}
+h1{font-family:'Oswald';font-size:36px;margin-bottom:6px}
+h1 span{color:#e50914}
+.sub{color:#9aa3b8;margin-bottom:30px}
+.site{background:#121724;border:1px solid #1e2538;border-radius:12px;padding:18px 20px;margin:14px 0;display:flex;align-items:center;gap:14px}
+.site .num{background:#e50914;color:#fff;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.site .nm{flex:1;font-size:17px;font-weight:600}
+.site .nm small{display:block;color:#8b93a9;font-weight:400;font-size:13px}
+.badge{font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;white-space:nowrap}
+.b-yes{background:#123d22;color:#5dff8f}
+.b-no{background:#3d1212;color:#ff8f8f}
+.note{background:#141a29;border:1px solid #232c44;border-radius:10px;padding:16px 20px;margin-top:26px;color:#9aa3b8;font-size:14px}
+.back{display:inline-block;margin-top:24px;color:#e50914;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Where We <span>Post Reviews</span></h1>
+<p class="sub">Every platform where Cine World publishes movie reviews. 🟢 = ads supported inside review posts &nbsp; 🔴 = review only.</p>
+
+<div id="list"></div>
+
+<div class="note">
+💰 <b>Ad system:</b> on 🟢 platforms, our ad codes are embedded inside the review posts (top, middle, bottom). On 🔴 platforms, reviews are posted without ads.
+New platforms are added to this list automatically.
+</div>
+
+<a class="back" href="./">← Back to Cine World</a>
+</div>
+
+<script>
+// ===== POSTING SITES — new sites get added here =====
+const SITES=[
+ {name:'GitHub Pages',        desc:'SEO review pages at /reviews/',            url:'https://samratkhanov-tech.github.io/cine-world/reviews/', ad:true},
+ {name:'Blogger',             desc:'cine-world-reviews.blogspot.com',          url:'https://cine-world-reviews.blogspot.com/',                 ad:true},
+ {name:'Facebook Page',       desc:'Cine World page posts with posters',      url:'https://www.facebook.com/',                                 ad:false},
+ {name:'Medium',              desc:'Long-form review articles',               url:'https://medium.com/',                                        ad:false},
+ {name:'X (Twitter)',         desc:'@SamratKhanjbpk review posts',            url:'https://x.com/',                                             ad:false},
+ {name:'Letterboxd',         desc:'Community reviews',                       url:'https://letterboxd.com/',                                    ad:false},
+ {name:'Reddit',              desc:'Movie community posts',                   url:'https://www.reddit.com/',                                     ad:false},
+ {name:'Quora',               desc:'Movie Q&A answers',                       url:'https://www.quora.com/',                                      ad:false},
+];
+// =====================================================
+document.getElementById('list').innerHTML=SITES.map((s,i)=>
+`<div class="site"><div class="num">${i+1}</div>
+<div class="nm">${s.ad?`<a href="${s.url}" target="_blank" style="color:#fff">${s.name}</a>`:s.name}
+<small>${s.desc}</small></div>
+<span class="badge ${s.ad?'b-yes':'b-no'}">${s.ad?'🟢 ADS OK':'🔴 NO ADS'}</span></div>`
+).join('');
+</script>
+</body>
+</html>
