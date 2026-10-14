@@ -272,12 +272,16 @@ ${ab.adBlock}`;
 }
 // ===== 🎬 মুভি সিলেক্ট (সব মুভি ব্রাউজার থেকে) =====
 let selectedMovie=null;
+let lastRendered=[];
 function selectMovie(t,y){
   selectedMovie={t,y};
   document.getElementById('selMovieName').textContent=t+(y?' ('+y+')':'');
   document.getElementById('selMovieBar').style.display='block';
-  document.getElementById('selMovieBar').scrollIntoView({behavior:'smooth',block:'center'});
+  gen(); // সিলেক্ট করলেই কমান্ডে নাম বসে যাবে — আলাদা করে বাটন চাপতে হবে না
+  document.getElementById('cmd').scrollIntoView({behavior:'smooth',block:'center'});
 }
+function selectMovieByIdx(i){const m=lastRendered[i];if(m)selectMovie(m.t,m.y||'')}
+function toggleBatchIdx(i,on){const m=lastRendered[i];if(m)toggleBatch(m.t+'|'+(m.y||''),m.t,m.y||'',on)}
 function clearMovie(){
   selectedMovie=null;
   document.getElementById('selMovieBar').style.display='none';
@@ -290,10 +294,11 @@ function renderMovies(){
   if(q){arr=MOVIE_IDX.filter(m=>m.t.toLowerCase().includes(q)).slice(0,200)}
   else{arr=MOVIE_IDX.slice(0,60)}
   document.getElementById('mvCount').textContent='('+MOVIE_IDX.length.toLocaleString()+'টা'+(q?' • '+arr.length+'টা পাওয়া গেছে':'')+')';
-  box.innerHTML=arr.map(m=>{
+  lastRendered=arr;
+  box.innerHTML=arr.map((m,i)=>{
     const key=m.t+'|'+(m.y||'');
     const inBatch=batchKeys.has(key);
-    return `<div class="mv-row"><input type="checkbox" class="bchk" ${inBatch?'checked':''} onchange='toggleBatch(${JSON.stringify(key)},${JSON.stringify(m.t)},${JSON.stringify(m.y||"")},this.checked)' title="ব্যাচে যোগ"><img loading="lazy" src="${escH(m.p)}" alt=""><div class="inf"><div class="t">${escH(m.t)}</div><div class="y">${escH(m.y||'')}</div></div><button class="mini" onclick='selectMovie(${JSON.stringify(m.t)},${JSON.stringify(m.y||"")})'>✅ সিলেক্ট</button></div>`;
+    return `<div class="mv-row"><input type="checkbox" class="bchk" ${inBatch?'checked':''} onchange="toggleBatchIdx(${i},this.checked)" title="ব্যাচে যোগ"><img loading="lazy" src="${escH(m.p)}" alt=""><div class="inf"><div class="t">${escH(m.t)}</div><div class="y">${escH(m.y||'')}</div></div><button class="mini" onclick="selectMovieByIdx(${i})">✅ সিলেক্ট</button></div>`;
   }).join('')||'<p class="sub">কিছু পাওয়া যায়নি</p>';
 }
 // ===== 📦 ব্যাচ সিস্টেম (সাইট × পোস্ট সংখ্যা) =====
