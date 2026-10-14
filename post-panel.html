@@ -4,6 +4,7 @@
 <title>🎬 পোস্ট প্যানেল — Cine World</title>
 <meta name="description" content="Cine World review posting panel — select sites, add ad codes, copy command."/>
 <meta name="robots" content="noindex, nofollow"/>
+<script src="movies-idx.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -13,6 +14,21 @@ header{text-align:center;padding:28px 0}
 header h1{font-size:30px;font-weight:700}
 header h1 .c{color:#e50914}
 header p{color:#9aa3b8;margin-top:6px}
+.bp-row{display:flex;gap:12px;align-items:center;background:#0d1119;border:1px solid #2a3350;border-radius:12px;padding:10px 12px;margin:10px 0}
+.bp-row img{width:46px;height:68px;object-fit:cover;border-radius:8px;flex-shrink:0;background:#1a2233}
+.bp-row .inf{flex:1;min-width:0}
+.bp-row .t{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bp-row .u{font-size:12px;color:#8b93a9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bp-row .u a{color:#6ea8ff;text-decoration:none}
+.mv-row{display:flex;gap:12px;align-items:center;background:#0d1119;border:1px solid #2a3350;border-radius:12px;padding:8px 12px;margin:8px 0}
+.mv-row img{width:40px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0;background:#1a2233}
+.mv-row .inf{flex:1;min-width:0}
+.mv-row .t{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv-row .y{font-size:12px;color:#8b93a9}
+.mini{font-size:13px;padding:8px 14px;border-radius:10px;border:1px solid #e50914;background:#e50914;color:#fff;cursor:pointer;font-weight:600;white-space:nowrap}
+.mini.ghost2{background:transparent;color:#ffb35c;border-color:#ffb35c}
+.srch{width:100%;padding:12px 16px;border-radius:12px;border:1px solid #2a3350;background:#0d1119;color:#e8eaf0;font-size:15px;margin-bottom:6px}
+#selMovieBar{display:none;background:#14240f;border:1px solid #3fae5a;border-radius:12px;padding:12px 16px;margin:10px 0;font-size:15px}
 .card{background:rgba(18,23,36,.92);border:1px solid #232c44;border-radius:16px;padding:22px;margin:18px 0;box-shadow:0 8px 30px rgba(0,0,0,.4)}
 .card h2{font-size:18px;color:#ffb35c;margin-bottom:4px}
 .card .sub{font-size:13px;color:#8b93a9;margin-bottom:12px}
@@ -48,6 +64,12 @@ footer{text-align:center;color:#5a6378;font-size:12px;padding:20px}
 <h1><span class="c">CINE</span> WORLD 🎬</h1>
 <p>রিভিউ পোস্ট প্যানেল — সাইট সিলেক্ট করো, এড কোড বসাও, কমান্ড কপি করে পাঠাও</p>
 </header>
+
+<div class="card">
+<h2>📝 Blogger → Facebook ক্রস-পোস্ট</h2>
+<p class="sub">Blogger 🔗 Facebook কানেক্ট — যেকোনো পোস্টের <b>FB কমান্ড</b> কপি করে চ্যাটে পাঠাও, Muse সরাসরি Facebook Page-এ পোস্ট করে দেবে (Blogger লিংক প্রথম কমেন্টে)। পোস্ট লিস্ট ব্লগ থেকে লাইভ আসে।</p>
+<div id="bpList"><p class="sub">⏳ Blogger পোস্ট লোড হচ্ছে...</p></div>
+</div>
 
 <div class="card">
 <h2>📋 কোন সাইটে পোস্ট হবে?</h2>
@@ -100,12 +122,22 @@ footer{text-align:center;color:#5a6378;font-size:12px;padding:20px}
 <div class="card">
 <h2>📝 কমান্ড তৈরি করো</h2>
 <p class="sub">কপি করে Muse-কে চ্যাটে পাঠাও + মুভির নাম বলো</p>
+<div id="selMovieBar">🎬 মুভি: <b id="selMovieName"></b> <a href="#" onclick="clearMovie();return false" style="color:#ff8a8a;font-size:13px">✖ বাতিল</a></div>
 <button class="main" onclick="gen()">✨ পোস্ট কমান্ড তৈরি করো</button>
 <div id="cmd">এখানে কমান্ড আসবে...</div>
 <button class="ghost" onclick="copyCmd()">📋 কপি করো</button>
 </div>
 
 <footer>Cine World © 2026 — পোস্ট প্যানেল</footer>
+</div>
+
+<div class="wrap" style="margin-top:0">
+<div class="card">
+<h2>🎬 সব মুভি <span id="mvCount" style="font-size:13px;color:#8b93a9"></span></h2>
+<p class="sub">একটার পর একটা — সার্চ করে মুভি বাছো, তারপর <b>✅ সিলেক্ট</b> চাপো। সিলেক্ট হলে উপরের কমান্ডে মুভির নাম বসে যাবে।</p>
+<input class="srch" id="mvSearch" placeholder="🔍 মুভির নাম লিখে খুঁজো..." oninput="renderMovies()">
+<div id="mvList"></div>
+</div>
 </div>
 
 <script>
@@ -210,13 +242,78 @@ function gen(){
     adBlock=`📦 কোড:\n${fmtCodes(na.net,na.c)}`;
   }
   document.getElementById('cmd').textContent=
-`🎬 POST
+`🎬 POST${selectedMovie?'\n🎞️ মুভি: '+selectedMovie.t+(selectedMovie.y?' ('+selectedMovie.y+')':''):''}
 সাইট: ${sel.map(s=>s.name+(s.ad?' [এডসহ]':'')+(s.linkRule==='comment'?' [লিংক কমেন্টে]':' [লিংক বাটনে]')).join(', ')}
 ওয়েবসাইট লিংক (প্রতিটা পোস্টে): ${site}
 📡 এড নেটওয়ার্ক: ${na.label}
 ${filledLine}
 ${adBlock}`;
 }
+// ===== 🎬 মুভি সিলেক্ট (সব মুভি ব্রাউজার থেকে) =====
+let selectedMovie=null;
+function selectMovie(t,y){
+  selectedMovie={t,y};
+  document.getElementById('selMovieName').textContent=t+(y?' ('+y+')':'');
+  document.getElementById('selMovieBar').style.display='block';
+  document.getElementById('selMovieBar').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function clearMovie(){
+  selectedMovie=null;
+  document.getElementById('selMovieBar').style.display='none';
+}
+function escH(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function renderMovies(){
+  const q=document.getElementById('mvSearch').value.trim().toLowerCase();
+  const box=document.getElementById('mvList');
+  let arr;
+  if(q){arr=MOVIE_IDX.filter(m=>m.t.toLowerCase().includes(q)).slice(0,200)}
+  else{arr=MOVIE_IDX.slice(0,60)}
+  document.getElementById('mvCount').textContent='('+MOVIE_IDX.length.toLocaleString()+'টা'+(q?' • '+arr.length+'টা পাওয়া গেছে':'')+')';
+  box.innerHTML=arr.map(m=>{
+    const lbl=m.t+(m.y?' ('+m.y+')':'');
+    return `<div class="mv-row"><img loading="lazy" src="${escH(m.p)}" alt=""><div class="inf"><div class="t">${escH(m.t)}</div><div class="y">${escH(m.y||'')}</div></div><button class="mini" onclick='selectMovie(${JSON.stringify(m.t)},${JSON.stringify(m.y||"")})'>✅ সিলেক্ট</button></div>`;
+  }).join('')||'<p class="sub">কিছু পাওয়া যায়নি</p>';
+}
+// ===== 📝 Blogger → Facebook ক্রস-পোস্ট =====
+function parseBloggerTitle(t){
+  let name=t.replace(/\s*[—–-]\s*Full Movie Review\s*$/i,'').replace(/\s*[—–-]\s*Full Review\s*$/i,'').trim();
+  const ym=name.match(/\((\d{4})\)\s*$/);
+  const year=ym?ym[1]:'';
+  name=name.replace(/\s*\(\d{4}\)\s*$/,'').trim();
+  return{name,year};
+}
+function findMovie(name,year){
+  const nl=name.toLowerCase();
+  let f=MOVIE_IDX.find(m=>m.t.toLowerCase()===nl&&(String(m.y)===String(year)));
+  if(!f)f=MOVIE_IDX.find(m=>m.t.toLowerCase()===nl&&(m.y==null||String(m.y)===String(year)));
+  if(!f)f=MOVIE_IDX.find(m=>m.t.toLowerCase()===nl);
+  return f||null;
+}
+function bloggerCb(data){
+  const box=document.getElementById('bpList');
+  const entries=(data.feed&&data.feed.entry)||[];
+  if(!entries.length){box.innerHTML='<p class="sub">কোনো পোস্ট পাওয়া যায়নি</p>';return}
+  box.innerHTML=entries.map(e=>{
+    const title=e.title.$t;
+    const link=(e.link.find(l=>l.rel==='alternate')||{}).href||'#';
+    const pub=(e.published&&e.published.$t||'').slice(0,10);
+    const {name,year}=parseBloggerTitle(title);
+    const mv=findMovie(name,year);
+    const poster=mv?mv.p:'';
+    const cmd=`🎬 FB-CROSSPOST\nMovie: ${name}${year?' ('+year+')':''}\nPoster: ${poster}\nBlogger: ${link}`;
+    return `<div class="bp-row">${poster?`<img loading="lazy" src="${escH(poster)}" alt="">`:''}<div class="inf"><div class="t">${escH(title)}</div><div class="u">📅 ${escH(pub)} • <a href="${escH(link)}" target="_blank">Blogger লিংক ↗</a></div></div><button class="mini" data-cmd="${escH(cmd)}" onclick="copyBpCmd(this)">📋 FB কমান্ড</button></div>`;
+  }).join('');
+}
+function copyBpCmd(btn){
+  navigator.clipboard.writeText(btn.getAttribute('data-cmd')).then(()=>alert('FB কমান্ড কপি হয়েছে! চ্যাটে পাঠাও ✅'));
+}
+(function loadBlogger(){
+  const s=document.createElement('script');
+  s.src='https://cine-world-reviews.blogspot.com/feeds/posts/default?alt=json-in-script&callback=bloggerCb&max-results=150';
+  s.onerror=()=>{document.getElementById('bpList').innerHTML='<p class="sub">⚠️ Blogger ফিড লোড হয়নি — নেট চেক করো</p>'};
+  document.head.appendChild(s);
+})();
+renderMovies();
 function copyCmd(){navigator.clipboard.writeText(document.getElementById('cmd').textContent).then(()=>alert('কপি হয়েছে! চ্যাটে পাঠাও ✅'))}
 </script>
 </body></html>
