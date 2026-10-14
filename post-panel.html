@@ -29,6 +29,11 @@ header p{color:#9aa3b8;margin-top:6px}
 .mini.ghost2{background:transparent;color:#ffb35c;border-color:#ffb35c}
 .srch{width:100%;padding:12px 16px;border-radius:12px;border:1px solid #2a3350;background:#0d1119;color:#e8eaf0;font-size:15px;margin-bottom:6px}
 #selMovieBar{display:none;background:#14240f;border:1px solid #3fae5a;border-radius:12px;padding:12px 16px;margin:10px 0;font-size:15px}
+#batchBar{display:none;background:#1a1430;border:1px solid #7b5cff;border-radius:12px;padding:12px 16px;margin:10px 0;font-size:15px}
+#batchBar .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.bchk{width:20px;height:20px;flex-shrink:0;accent-color:#7b5cff;cursor:pointer}
+#bpBatchBar{display:none;background:#1a1430;border:1px solid #7b5cff;border-radius:12px;padding:10px 14px;margin:10px 0;font-size:14px}
+.count-pill{display:inline-block;background:#232c44;border-radius:20px;padding:2px 10px;font-size:12px;margin:2px;color:#ffb35c}
 .card{background:rgba(18,23,36,.92);border:1px solid #232c44;border-radius:16px;padding:22px;margin:18px 0;box-shadow:0 8px 30px rgba(0,0,0,.4)}
 .card h2{font-size:18px;color:#ffb35c;margin-bottom:4px}
 .card .sub{font-size:13px;color:#8b93a9;margin-bottom:12px}
@@ -67,7 +72,8 @@ footer{text-align:center;color:#5a6378;font-size:12px;padding:20px}
 
 <div class="card">
 <h2>📝 Blogger → Facebook ক্রস-পোস্ট</h2>
-<p class="sub">Blogger 🔗 Facebook কানেক্ট — যেকোনো পোস্টের <b>FB কমান্ড</b> কপি করে চ্যাটে পাঠাও, Muse সরাসরি Facebook Page-এ পোস্ট করে দেবে (Blogger লিংক প্রথম কমেন্টে)। পোস্ট লিস্ট ব্লগ থেকে লাইভ আসে।</p>
+<p class="sub">Blogger 🔗 Facebook কানেক্ট — যেকোনো পোস্টের <b>FB কমান্ড</b> কপি করে চ্যাটে পাঠাও, Muse সরাসরি Facebook Page-এ পোস্ট করে দেবে (Blogger লিংক প্রথম কমেন্টে)। পোস্ট লিস্ট ব্লগ থেকে লাইভ আসে। <b>☑️ টিক</b> দিয়ে একসাথে অনেকগুলোর ব্যাচ কমান্ডও নিতে পারো।</p>
+<div id="bpBatchBar">📦 ব্যাচ: <b id="bpBatchCount">০</b>টা পোস্ট <button class="mini" onclick="copyBpBatchCmd()" style="margin-left:8px">📋 ব্যাচ FB কমান্ড</button> <button class="mini ghost2" onclick="clearBpBatch()">✖</button></div>
 <div id="bpList"><p class="sub">⏳ Blogger পোস্ট লোড হচ্ছে...</p></div>
 </div>
 
@@ -134,7 +140,11 @@ footer{text-align:center;color:#5a6378;font-size:12px;padding:20px}
 <div class="wrap" style="margin-top:0">
 <div class="card">
 <h2>🎬 সব মুভি <span id="mvCount" style="font-size:13px;color:#8b93a9"></span></h2>
-<p class="sub">একটার পর একটা — সার্চ করে মুভি বাছো, তারপর <b>✅ সিলেক্ট</b> চাপো। সিলেক্ট হলে উপরের কমান্ডে মুভির নাম বসে যাবে।</p>
+<p class="sub">একটার পর একটা — সার্চ করে মুভি বাছো। <b>✅ সিলেক্ট</b> = একটা মুভির কমান্ড | <b>☑️ টিক</b> = ব্যাচে যোগ (একসাথে অনেকগুলো)।</p>
+<div id="batchBar">📦 ব্যাচ: <b id="batchCount">০</b>টা মুভি
+<div class="row"><button class="mini" onclick="copyBatchCmd()">📋 ব্যাচ কমান্ড কপি</button><button class="mini ghost2" onclick="clearBatch()">✖ খালি করো</button></div>
+<div class="row" id="batchSiteCounts" style="font-size:13px;color:#9aa3b8"></div>
+</div>
 <input class="srch" id="mvSearch" placeholder="🔍 মুভির নাম লিখে খুঁজো..." oninput="renderMovies()">
 <div id="mvList"></div>
 </div>
@@ -165,9 +175,10 @@ SITES.forEach(s=>{
      <span class="b ${s.ad?'ad-yes':'ad-no'}">${s.ad?'🟢 এড':'🔴 এড নেই'}</span>
      <span class="b ${s.linkRule==='comment'?'lnk-c':'lnk-b'}">${s.linkRule==='comment'?'💬 কমেন্টে লিংক':'🔘 বাটনে লিংক'}</span>
    </span>`;
-  d.onclick=e=>{if(e.target.tagName!=='INPUT'){const c=document.getElementById('s_'+s.id);c.checked=!c.checked}};
+  d.onclick=e=>{if(e.target.tagName!=='INPUT'){const c=document.getElementById('s_'+s.id);c.checked=!c.checked;updateBatchBar()}};
   box.appendChild(d);
 });
+document.getElementById('sites').addEventListener('change',updateBatchBar);
 const v=id=>document.getElementById(id).value.trim();
 // ===== Adsterra (সাইজ) + Monetag (ফরম্যাট) — অটো-সেভ =====
 const N1={name:'Adsterra',fields:['728x90','320x50','300x250','468x60','160x600','160x300'],
@@ -219,10 +230,7 @@ function filledSizes(net,c){
   // শুধু যেগুলোতে কোড বসানো আছে
   return net.fields.filter(f=>c[f]).map(f=>net.labels[f]);
 }
-function gen(){
-  const sel=SITES.filter(s=>document.getElementById('s_'+s.id).checked);
-  if(!sel.length){alert('কমপক্ষে ১টা সাইট সিলেক্ট করো!');return}
-  const site='https://samratkhanov-tech.github.io/cine-world/';
+function buildAdBlock(){
   const na=netAds();
   let adBlock, filledLine;
   if(na.mode==='rotate'){
@@ -241,13 +249,26 @@ function gen(){
     filledLine=`✅ পোস্টে যাবে (ভরা সাইজ): ${filled.join(', ')||'কোনোটাই না'}`;
     adBlock=`📦 কোড:\n${fmtCodes(na.net,na.c)}`;
   }
+  return{label:na.label,filledLine,adBlock};
+}
+function selSites(){
+  return SITES.filter(s=>document.getElementById('s_'+s.id).checked);
+}
+function siteLine(s){
+  return s.name+(s.ad?' [এডসহ]':'')+(s.linkRule==='comment'?' [লিংক কমেন্টে]':' [লিংক বাটনে]');
+}
+function gen(){
+  const sel=selSites();
+  if(!sel.length){alert('কমপক্ষে ১টা সাইট সিলেক্ট করো!');return}
+  const site='https://samratkhanov-tech.github.io/cine-world/';
+  const ab=buildAdBlock();
   document.getElementById('cmd').textContent=
 `🎬 POST${selectedMovie?'\n🎞️ মুভি: '+selectedMovie.t+(selectedMovie.y?' ('+selectedMovie.y+')':''):''}
-সাইট: ${sel.map(s=>s.name+(s.ad?' [এডসহ]':'')+(s.linkRule==='comment'?' [লিংক কমেন্টে]':' [লিংক বাটনে]')).join(', ')}
+সাইট: ${sel.map(siteLine).join(', ')}
 ওয়েবসাইট লিংক (প্রতিটা পোস্টে): ${site}
-📡 এড নেটওয়ার্ক: ${na.label}
-${filledLine}
-${adBlock}`;
+📡 এড নেটওয়ার্ক: ${ab.label}
+${ab.filledLine}
+${ab.adBlock}`;
 }
 // ===== 🎬 মুভি সিলেক্ট (সব মুভি ব্রাউজার থেকে) =====
 let selectedMovie=null;
@@ -270,9 +291,38 @@ function renderMovies(){
   else{arr=MOVIE_IDX.slice(0,60)}
   document.getElementById('mvCount').textContent='('+MOVIE_IDX.length.toLocaleString()+'টা'+(q?' • '+arr.length+'টা পাওয়া গেছে':'')+')';
   box.innerHTML=arr.map(m=>{
-    const lbl=m.t+(m.y?' ('+m.y+')':'');
-    return `<div class="mv-row"><img loading="lazy" src="${escH(m.p)}" alt=""><div class="inf"><div class="t">${escH(m.t)}</div><div class="y">${escH(m.y||'')}</div></div><button class="mini" onclick='selectMovie(${JSON.stringify(m.t)},${JSON.stringify(m.y||"")})'>✅ সিলেক্ট</button></div>`;
+    const key=m.t+'|'+(m.y||'');
+    const inBatch=batchKeys.has(key);
+    return `<div class="mv-row"><input type="checkbox" class="bchk" ${inBatch?'checked':''} onchange='toggleBatch(${JSON.stringify(key)},${JSON.stringify(m.t)},${JSON.stringify(m.y||"")},this.checked)' title="ব্যাচে যোগ"><img loading="lazy" src="${escH(m.p)}" alt=""><div class="inf"><div class="t">${escH(m.t)}</div><div class="y">${escH(m.y||'')}</div></div><button class="mini" onclick='selectMovie(${JSON.stringify(m.t)},${JSON.stringify(m.y||"")})'>✅ সিলেক্ট</button></div>`;
   }).join('')||'<p class="sub">কিছু পাওয়া যায়নি</p>';
+}
+// ===== 📦 ব্যাচ সিস্টেম (সাইট × পোস্ট সংখ্যা) =====
+const batchKeys=new Set();   // "title|year"
+const batchList=[];          // [{t,y}] order kept
+function toggleBatch(key,t,y,on){
+  if(on){if(!batchKeys.has(key)){batchKeys.add(key);batchList.push({t,y})}}
+  else{batchKeys.delete(key);const i=batchList.findIndex(b=>b.t===t&&String(b.y)===String(y));if(i>=0)batchList.splice(i,1)}
+  updateBatchBar();
+}
+function clearBatch(){batchKeys.clear();batchList.length=0;renderMovies();updateBatchBar()}
+function updateBatchBar(){
+  const n=batchList.length;
+  const bar=document.getElementById('batchBar');
+  bar.style.display=n?'block':'none';
+  document.getElementById('batchCount').textContent=n;
+  // কোন সাইটে কয়টা পোস্ট — সিলেক্টেড সাইট × ব্যাচের মুভি
+  const sel=selSites();
+  document.getElementById('batchSiteCounts').innerHTML=n?('📊 '+sel.map(s=>`${escH(s.name)}: <b>${n}টা</b>`).join(' • ')):'';
+}
+function copyBatchCmd(){
+  const sel=selSites();
+  if(!sel.length){alert('কমপক্ষে ১টা সাইট সিলেক্ট করো!');return}
+  if(!batchList.length){alert('ব্যাচে কোনো মুভি নেই — ☑️ টিক দাও!');return}
+  const site='https://samratkhanov-tech.github.io/cine-world/';
+  const ab=buildAdBlock();
+  const n=batchList.length;
+  const cmd=`🎬 BATCH-POST (${n}টা মুভি × ${sel.length}টা সাইট = ${n*sel.length}টা পোস্ট)\n📊 সাইট × পোস্ট সংখ্যা:\n${sel.map(s=>`- ${siteLine(s)}: ${n}টা পোস্ট`).join('\n')}\n🎞️ মুভি (${n}টা):\n${batchList.map((b,i)=>(i+1)+'. '+b.t+(b.y?' ('+b.y+')':'')).join('\n')}\nওয়েবসাইট লিংক (প্রতিটা পোস্টে): ${site}\n📡 এড নেটওয়ার্ক: ${ab.label}\n${ab.filledLine}\n${ab.adBlock}`;
+  navigator.clipboard.writeText(cmd).then(()=>alert('ব্যাচ কমান্ড কপি হয়েছে! চ্যাটে পাঠাও ✅'));
 }
 // ===== 📝 Blogger → Facebook ক্রস-পোস্ট =====
 function parseBloggerTitle(t){
@@ -289,20 +339,44 @@ function findMovie(name,year){
   if(!f)f=MOVIE_IDX.find(m=>m.t.toLowerCase()===nl);
   return f||null;
 }
+const bpPosts=[];   // [{name,year,poster,link}]
+const bpBatchKeys=new Set();
 function bloggerCb(data){
   const box=document.getElementById('bpList');
   const entries=(data.feed&&data.feed.entry)||[];
   if(!entries.length){box.innerHTML='<p class="sub">কোনো পোস্ট পাওয়া যায়নি</p>';return}
-  box.innerHTML=entries.map(e=>{
+  bpPosts.length=0;
+  box.innerHTML=entries.map((e,idx)=>{
     const title=e.title.$t;
     const link=(e.link.find(l=>l.rel==='alternate')||{}).href||'#';
     const pub=(e.published&&e.published.$t||'').slice(0,10);
     const {name,year}=parseBloggerTitle(title);
     const mv=findMovie(name,year);
     const poster=mv?mv.p:'';
+    bpPosts.push({name,year,poster,link});
     const cmd=`🎬 FB-CROSSPOST\nMovie: ${name}${year?' ('+year+')':''}\nPoster: ${poster}\nBlogger: ${link}`;
-    return `<div class="bp-row">${poster?`<img loading="lazy" src="${escH(poster)}" alt="">`:''}<div class="inf"><div class="t">${escH(title)}</div><div class="u">📅 ${escH(pub)} • <a href="${escH(link)}" target="_blank">Blogger লিংক ↗</a></div></div><button class="mini" data-cmd="${escH(cmd)}" onclick="copyBpCmd(this)">📋 FB কমান্ড</button></div>`;
+    return `<div class="bp-row"><input type="checkbox" class="bchk" ${bpBatchKeys.has(idx)?'checked':''} onchange="toggleBpBatch(${idx},this.checked)" title="ব্যাচে যোগ">${poster?`<img loading="lazy" src="${escH(poster)}" alt="">`:''}<div class="inf"><div class="t">${escH(title)}</div><div class="u">📅 ${escH(pub)} • <a href="${escH(link)}" target="_blank">Blogger লিংক ↗</a></div></div><button class="mini" data-cmd="${escH(cmd)}" onclick="copyBpCmd(this)">📋 FB কমান্ড</button></div>`;
   }).join('');
+  updateBpBatchBar();
+}
+function toggleBpBatch(idx,on){
+  if(on)bpBatchKeys.add(idx);else bpBatchKeys.delete(idx);
+  updateBpBatchBar();
+}
+function clearBpBatch(){bpBatchKeys.clear();document.querySelectorAll('#bpList .bchk').forEach(c=>c.checked=false);updateBpBatchBar()}
+function updateBpBatchBar(){
+  const n=bpBatchKeys.size;
+  document.getElementById('bpBatchBar').style.display=n?'block':'none';
+  document.getElementById('bpBatchCount').textContent=n;
+}
+function copyBpBatchCmd(){
+  if(!bpBatchKeys.size){alert('ব্যাচে কোনো পোস্ট নেই — ☑️ টিক দাও!');return}
+  const items=[...bpBatchKeys].sort((a,b)=>a-b).map((idx,i)=>{
+    const p=bpPosts[idx];
+    return `${i+1}. Movie: ${p.name}${p.year?' ('+p.year+')':''}\n   Poster: ${p.poster}\n   Blogger: ${p.link}`;
+  }).join('\n');
+  const cmd=`🎬 FB-CROSSPOST-BATCH (${bpBatchKeys.size}টা পোস্ট)\n${items}`;
+  navigator.clipboard.writeText(cmd).then(()=>alert('ব্যাচ FB কমান্ড কপি হয়েছে! চ্যাটে পাঠাও ✅'));
 }
 function copyBpCmd(btn){
   navigator.clipboard.writeText(btn.getAttribute('data-cmd')).then(()=>alert('FB কমান্ড কপি হয়েছে! চ্যাটে পাঠাও ✅'));
