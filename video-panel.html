@@ -25,6 +25,7 @@ label{font-weight:bold;color:#ffb38a}
 <button id="tab1" onclick="showTab(1)" style="background:#ff6b35">🎞️ রিভিউ শর্ট</button>
 <button id="tab2" onclick="showTab(2)" style="background:#444">✨ AI ভিডিও (ফ্রি)</button>
 <button id="tab3" onclick="showTab(3)" style="background:#444">🎨 AI ছবি (ফ্রি)</button>
+<button id="tab4" onclick="showTab(4)" style="background:#444">💬 AI লেখা (ফ্রি)</button>
 </div>
 <div id="sec1">
 <p>মুভি সিলেক্ট করো → রেটিং + এক লাইন রিভিউ দাও → <b>"🎬 ভিডিও বানাও"</b> চাপ দাও → ব্রাউজারেই ১৫ সেকেন্ডের ভার্টিকাল শর্ট তৈরি হবে! (পোস্টার slow-zoom + মিউজিকসহ)</p>
@@ -68,9 +69,11 @@ function showTab(n){
   document.getElementById('sec1').style.display=n===1?'block':'none';
   document.getElementById('sec2').style.display=n===2?'block':'none';
   document.getElementById('sec3').style.display=n===3?'block':'none';
+  document.getElementById('sec4').style.display=n===4?'block':'none';
   document.getElementById('tab1').style.background=n===1?'#ff6b35':'#444';
   document.getElementById('tab2').style.background=n===2?'#ff6b35':'#444';
   document.getElementById('tab3').style.background=n===3?'#ff6b35':'#444';
+  document.getElementById('tab4').style.background=n===4?'#ff6b35':'#444';
 }
 </script>
 
@@ -98,6 +101,34 @@ async function makeAIImage(){
     img.onerror=()=>{st.textContent='❌ সমস্যা হয়েছে — আবার চেষ্টা করো';btn.disabled=false;};
     img.src=url; img.style.display='block';
   }catch(e){st.textContent='❌ সমস্যা: '+e.message;btn.disabled=false;}
+}
+</script>
+</div>
+
+<div id="sec4" style="display:none">
+<p>💬 <b>প্রশ্ন লিখো → ফ্রি AI উত্তর পাও!</b> (কোনো অ্যাকাউন্ট লাগবে না — ভিডিও প্রম্পট, স্ক্রিপ্ট, ক্যাপশন লিখতে ব্যবহার করো)</p>
+<label>✏️ তোমার প্রশ্ন:</label>
+<textarea id="txtq" rows="3" style="width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #444;background:#16162a;color:#eee;font-size:16px;box-sizing:border-box" placeholder="যেমন: Write a cinematic video prompt about a dragon"></textarea>
+<br><button id="txtbtn" onclick="makeAIText()">💬 AI উত্তর পাও (ফ্রি)</button>
+<div id="txtstatus" style="background:#14141f;border:1px solid #2a2a3a;border-radius:8px;padding:12px;margin:12px 0;font-size:14px;white-space:pre-wrap">প্রস্তুত ✅</div>
+<button onclick="copyTxt()" style="background:#444">📋 কপি করো</button>
+<script>
+async function makeAIText(){
+  const q=document.getElementById('txtq').value.trim();
+  if(!q){document.getElementById('txtstatus').textContent='❌ আগে প্রশ্ন লিখো!';return;}
+  const btn=document.getElementById('txtbtn'); btn.disabled=true;
+  const st=document.getElementById('txtstatus');
+  try{
+    st.textContent='⏳ AI লিখছে...';
+    const r=await fetch('https://text.pollinations.ai/'+encodeURIComponent(q));
+    const t=await r.text();
+    st.textContent=t;
+  }catch(e){st.textContent='❌ সমস্যা: '+e.message;}
+  btn.disabled=false;
+}
+function copyTxt(){
+  navigator.clipboard.writeText(document.getElementById('txtstatus').textContent)
+    .then(()=>alert('✅ কপি হয়েছে!'));
 }
 </script>
 </div>
@@ -194,7 +225,9 @@ const VIDEO_PROVIDERS=[
  {name:'Wan 2.2', space:'Upsampler/wan-2-2-14b-text-to-video', ep:'/generate_video',
   build:(prompt,dur)=>({prompt:prompt,aspect_ratio:'16:9 (832x480)',steps:20,
     negative_prompt:'worst quality, blurry',duration_seconds:dur,
-    guidance_scale:5,guidance_scale_2:5,seed:0,randomize_seed:true})}
+    guidance_scale:5,guidance_scale_2:5,seed:0,randomize_seed:true})},
+ {name:'CogVideoX', space:'zai-org/CogVideoX-2B-Space', ep:'/generate',
+  build:(prompt,dur)=>({prompt:prompt,num_inference_steps:30,guidance_scale:6})}
 ];
 let aiClients={};
 
