@@ -24,6 +24,7 @@ label{font-weight:bold;color:#ffb38a}
 <div style="margin:12px 0">
 <button id="tab1" onclick="showTab(1)" style="background:#ff6b35">🎞️ রিভিউ শর্ট</button>
 <button id="tab2" onclick="showTab(2)" style="background:#444">✨ AI ভিডিও (ফ্রি)</button>
+<button id="tab3" onclick="showTab(3)" style="background:#444">🎨 AI ছবি (ফ্রি)</button>
 </div>
 <div id="sec1">
 <p>মুভি সিলেক্ট করো → রেটিং + এক লাইন রিভিউ দাও → <b>"🎬 ভিডিও বানাও"</b> চাপ দাও → ব্রাউজারেই ১৫ সেকেন্ডের ভার্টিকাল শর্ট তৈরি হবে! (পোস্টার slow-zoom + মিউজিকসহ)</p>
@@ -66,10 +67,40 @@ label{font-weight:bold;color:#ffb38a}
 function showTab(n){
   document.getElementById('sec1').style.display=n===1?'block':'none';
   document.getElementById('sec2').style.display=n===2?'block':'none';
+  document.getElementById('sec3').style.display=n===3?'block':'none';
   document.getElementById('tab1').style.background=n===1?'#ff6b35':'#444';
   document.getElementById('tab2').style.background=n===2?'#ff6b35':'#444';
+  document.getElementById('tab3').style.background=n===3?'#ff6b35':'#444';
 }
 </script>
+
+<div id="sec3" style="display:none">
+<p>🎨 <b>প্রম্পট লিখো → ফ্রি AI ছবি পাও!</b> (Flux মডেল — কোনো অ্যাকাউন্ট লাগবে না, আনলিমিটেড ফ্রি)</p>
+<label>✏️ ছবির প্রম্পট (ইংরেজিতে লিখো):</label>
+<textarea id="imgprompt" rows="3" style="width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #444;background:#16162a;color:#eee;font-size:16px;box-sizing:border-box" placeholder="যেমন: A majestic dragon over a mountain castle, cinematic lighting"></textarea>
+<br><button id="imgbtn" onclick="makeAIImage()">🎨 AI ছবি বানাও (ফ্রি)</button>
+<div id="imgstatus" style="background:#14141f;border:1px solid #2a2a3a;border-radius:8px;padding:12px;margin:12px 0;font-size:14px">প্রস্তুত ✅</div>
+<img id="aiimg" style="max-width:100%;border-radius:12px;display:none">
+<br><a id="imgdl" style="display:none" download="cineworld-ai.png"><button style="background:#22aa55">⬇️ ছবি ডাউনলোড</button></a>
+<script>
+async function makeAIImage(){
+  const p=document.getElementById('imgprompt').value.trim();
+  if(!p){document.getElementById('imgstatus').textContent='❌ আগে প্রম্পট লিখো!';return;}
+  const btn=document.getElementById('imgbtn'); btn.disabled=true;
+  const st=document.getElementById('imgstatus');
+  try{
+    st.textContent='⏳ AI ছবি বানানো হচ্ছে... (৩০-৬০ সেকেন্ড)';
+    const seed=Math.floor(Math.random()*1000000);
+    const url='https://image.pollinations.ai/prompt/'+encodeURIComponent(p)+'?width=1024&height=1024&model=flux&nologo=true&seed='+seed;
+    const img=document.getElementById('aiimg');
+    img.onload=()=>{st.textContent='✅ ছবি তৈরি! ডাউনলোড করো 👇';
+      const dl=document.getElementById('imgdl'); dl.href=url; dl.style.display='inline-block'; btn.disabled=false;};
+    img.onerror=()=>{st.textContent='❌ সমস্যা হয়েছে — আবার চেষ্টা করো';btn.disabled=false;};
+    img.src=url; img.style.display='block';
+  }catch(e){st.textContent='❌ সমস্যা: '+e.message;btn.disabled=false;}
+}
+</script>
+</div>
 
 <script type="module">
 import { FFmpeg } from 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js';
