@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="bn"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🎬 ভিডিও প্যানেল — Cine World Review Shorts</title>
+<meta name="robots" content="noindex, nofollow">
+<script src="movies-idx.js"></script>
+<style>
+body{font-family:system-ui,sans-serif;background:#0d0d1a;color:#eee;max-width:720px;margin:0 auto;padding:18px;line-height:1.6}
+h1{color:#ff6b35}input,textarea{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #444;background:#16162a;color:#eee;font-size:16px;box-sizing:border-box}
+button{background:#ff6b35;color:#fff;border:none;padding:14px 28px;border-radius:8px;font-size:17px;font-weight:bold;cursor:pointer;margin:10px 4px 10px 0}
+button:disabled{background:#555;cursor:not-allowed}
+#results{max-height:300px;overflow-y:auto;border:1px solid #333;border-radius:8px;margin:8px 0}
+.mrow{display:flex;align-items:center;gap:12px;padding:8px;cursor:pointer;border-bottom:1px solid #222}
+.mrow:hover{background:#1a1a2e}.mrow img{width:50px;height:75px;object-fit:cover;border-radius:4px}
+#preview{text-align:center;margin:16px 0}#preview img{max-width:220px;border-radius:12px}
+#cmd{background:#14141f;border:1px solid #2a2a3a;border-radius:8px;padding:14px;white-space:pre-wrap;font-size:14px;margin:12px 0;word-break:break-word}
+.note{background:#1a1a2e;border-left:4px solid #ff6b35;padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;font-size:14px}
+label{font-weight:bold;color:#ffb38a}
+</style></head><body>
+<h1>🎬 ভিডিও প্যানেল</h1>
+<p>মুভি সিলেক্ট করো → রেটিং + এক লাইন রিভিউ দাও → কমান্ড কপি করে চ্যাটে পাঠাও → ১৫ সেকেন্ডের ভার্টিকাল রিভিউ শর্ট পেয়ে যাবে! (পোস্টার slow-zoom + মিউজিকসহ)</p>
+
+<label>🔍 মুভি খুঁজো:</label>
+<input id="q" placeholder="মুভির নাম লিখো... (যেমন: Dune)" oninput="search()">
+<div id="results"></div>
+
+<div id="preview"></div>
+
+<div id="form" style="display:none">
+<label>⭐ IMDb রেটিং:</label>
+<input id="rating" placeholder="যেমন: 8.0" value="7.5">
+<label>💬 এক লাইন রিভিউ (ইংরেজিতে):</label>
+<input id="line" placeholder="যেমন: Epic sci-fi masterpiece!" maxlength="60">
+<button onclick="gen()">📋 ভিডিও কমান্ড কপি</button>
+<div id="cmd"></div>
+</div>
+
+<div class="note">📌 কমান্ড কপি করে Muse চ্যাটে পাঠাও। ভিডিও তৈরি হয়ে গেলে ডাউনলোড লিংক পাবে — TikTok / Reels / Shorts-এ আপলোড করো! 🎵 মিউজিক: "Colossal" by Aylex (ক্যাপশনে ক্রেডিট দিও)</div>
+
+<script>
+let sel=null;
+function search(){
+  const q=document.getElementById('q').value.trim().toLowerCase();
+  const box=document.getElementById('results'); box.innerHTML='';
+  if(q.length<2) return;
+  const hits=MOVIE_IDX.filter(m=>m.t.toLowerCase().includes(q)).slice(0,12);
+  hits.forEach((m,i)=>{
+    const d=document.createElement('div'); d.className='mrow';
+    d.innerHTML='<img src="'+m.p+'" loading="lazy" onerror="this.style.display=\'none\'"><span>'+m.t+(m.y?' ('+m.y+')':'')+'</span>';
+    d.onclick=()=>select(m); box.appendChild(d);
+  });
+  if(!hits.length) box.innerHTML='<div style="padding:12px;color:#888">কিছু পাওয়া যায়নি</div>';
+}
+function select(m){
+  sel=m;
+  document.getElementById('preview').innerHTML='<img src="'+m.p+'"><h3>'+m.t+(m.y?' ('+m.y+')':'')+'</h3>';
+  document.getElementById('form').style.display='block';
+  document.getElementById('results').innerHTML='';
+  document.getElementById('q').value=m.t;
+  window.scrollTo(0,document.getElementById('form').offsetTop-20);
+}
+function gen(){
+  if(!sel) return;
+  const r=document.getElementById('rating').value.trim()||'7.5';
+  const l=document.getElementById('line').value.trim();
+  const cmd='🎬 VIDEO-SHORT\n🎞️ মুভি: '+sel.t+(sel.y?' ('+sel.y+')':'')+'\n⭐ রেটিং: '+r+'\n💬 লাইন: '+(l||'-')+'\n🖼️ পোস্টার: '+sel.p;
+  document.getElementById('cmd').textContent=cmd;
+  navigator.clipboard.writeText(cmd).then(()=>alert('✅ কমান্ড কপি হয়েছে! চ্যাটে পাঠাও'));
+}
+</script>
+</body></html>
