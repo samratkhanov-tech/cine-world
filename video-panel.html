@@ -205,7 +205,12 @@ window.makeAIVideo=async function(){
       mode: 'text-to-video', duration_ui: dur
     });
     bar.style.width='90%';
-    const vurl=result.data[0].url;
+    let vurl=null; const d0=result.data[0];
+    if(typeof d0==='string') vurl=d0;
+    else if(d0&&d0.url) vurl=d0.url;
+    else if(d0&&d0.path) vurl=d0.path;
+    if(vurl&&vurl.startsWith('/')) vurl='https://lightricks-ltx-video-distilled.hf.space'+vurl;
+    if(!vurl) throw new Error('ভিডিও URL পাওয়া যায়নি');
     const v=document.getElementById('aivideo');
     v.src=vurl; v.style.display='block';
     const dl=document.getElementById('aidl');
