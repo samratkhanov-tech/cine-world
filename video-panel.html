@@ -81,6 +81,12 @@ function showTab(n){
 <p>🎨 <b>প্রম্পট লিখো → ফ্রি AI ছবি পাও!</b> (Flux মডেল — কোনো অ্যাকাউন্ট লাগবে না, আনলিমিটেড ফ্রি)</p>
 <label>✏️ ছবির প্রম্পট (ইংরেজিতে লিখো):</label>
 <textarea id="imgprompt" rows="3" style="width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #444;background:#16162a;color:#eee;font-size:16px;box-sizing:border-box" placeholder="যেমন: A majestic dragon over a mountain castle, cinematic lighting"></textarea>
+<label>🎨 মডেল:</label>
+<select id="imgmodel" style="padding:10px;margin:8px 0;border-radius:8px;background:#16162a;color:#eee;border:1px solid #444">
+<option value="flux">Flux (সেরা কোয়ালিটি)</option>
+<option value="turbo">Turbo (দ্রুত)</option>
+<option value="hf">HF Flux (ব্যাকআপ সার্ভার)</option>
+</select>
 <br><button id="imgbtn" onclick="makeAIImage()">🎨 AI ছবি বানাও (ফ্রি)</button>
 <div id="imgstatus" style="background:#14141f;border:1px solid #2a2a3a;border-radius:8px;padding:12px;margin:12px 0;font-size:14px">প্রস্তুত ✅</div>
 <img id="aiimg" style="max-width:100%;border-radius:12px;display:none">
@@ -91,16 +97,32 @@ async function makeAIImage(){
   if(!p){document.getElementById('imgstatus').textContent='❌ আগে প্রম্পট লিখো!';return;}
   const btn=document.getElementById('imgbtn'); btn.disabled=true;
   const st=document.getElementById('imgstatus');
+  const model=document.getElementById('imgmodel').value;
+  const img=document.getElementById('aiimg');
+  img.style.display='none'; document.getElementById('imgdl').style.display='none';
+  const done=(url,label)=>{st.textContent='✅ ছবি তৈরি! ('+label+') ডাউনলোড করো 👇';
+    const dl=document.getElementById('imgdl'); dl.href=url; dl.style.display='inline-block'; btn.disabled=false;};
+  const fail=(msg)=>{st.textContent='❌ '+msg;btn.disabled=false;};
   try{
+    if(model==='hf'){
+      st.textContent='⏳ HF Flux সার্ভারে বানানো হচ্ছে... (১-২ মিনিট)';
+      const {Client}=await import('https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.js');
+      const client=await Client.connect('Chibueze-Kingsley/Text_To_Image_Flux');
+      const r=await client.predict('/generate_image',{prompt:p});
+      let u=null; const d0=r.data[0];
+      if(typeof d0==='string')u=d0; else if(d0&&d0.url)u=d0.url;
+      if(u&&u.startsWith('/'))u='https://chibueze-kingsley-text-to-image-flux.hf.space'+u;
+      if(!u)throw new Error('URL পাওয়া যায়নি');
+      img.onload=()=>done(u,'HF Flux'); img.onerror=()=>fail('ছবি লোড হয়নি');
+      img.src=u; img.style.display='block'; return;
+    }
     st.textContent='⏳ AI ছবি বানানো হচ্ছে... (৩০-৬০ সেকেন্ড)';
     const seed=Math.floor(Math.random()*1000000);
-    const url='https://image.pollinations.ai/prompt/'+encodeURIComponent(p)+'?width=1024&height=1024&model=flux&nologo=true&seed='+seed;
-    const img=document.getElementById('aiimg');
-    img.onload=()=>{st.textContent='✅ ছবি তৈরি! ডাউনলোড করো 👇';
-      const dl=document.getElementById('imgdl'); dl.href=url; dl.style.display='inline-block'; btn.disabled=false;};
-    img.onerror=()=>{st.textContent='❌ সমস্যা হয়েছে — আবার চেষ্টা করো';btn.disabled=false;};
+    const url='https://image.pollinations.ai/prompt/'+encodeURIComponent(p)+'?width=1024&height=1024&model='+model+'&nologo=true&seed='+seed;
+    img.onload=()=>done(url,model==='flux'?'Flux':'Turbo');
+    img.onerror=()=>fail('সমস্যা হয়েছে — আবার চেষ্টা করো');
     img.src=url; img.style.display='block';
-  }catch(e){st.textContent='❌ সমস্যা: '+e.message;btn.disabled=false;}
+  }catch(e){fail('সমস্যা: '+e.message);}
 }
 </script>
 </div>
