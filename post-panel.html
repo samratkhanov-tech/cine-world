@@ -271,7 +271,7 @@ function gen(){
   const site='https://samratkhanov-tech.github.io/cine-world/';
   const ab=buildAdBlock();
   document.getElementById('cmd').textContent=
-`🎬 POST${selectedMovie?'\n🎞️ মুভি: '+selectedMovie.t+(selectedMovie.y?' ('+selectedMovie.y+')':''):'')}
+`🎬 POST${selectedMovie?'\n🎞️ মুভি: '+selectedMovie.t+(selectedMovie.y?' ('+selectedMovie.y+')':''):''}
 সাইট: ${sel.map(siteLine).join(', ')}
 📌 প্রতিটা সাইটে কী পোস্ট করতে হবে:
 ${sel.map(siteSpec).join('\n')}
