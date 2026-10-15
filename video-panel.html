@@ -21,6 +21,11 @@ label{font-weight:bold;color:#ffb38a}
 .progress>div{height:100%;background:#ff6b35;width:0%;transition:width .3s}
 </style></head><body>
 <h1>🎬 ভিডিও প্যানেল</h1>
+<div style="margin:12px 0">
+<button id="tab1" onclick="showTab(1)" style="background:#ff6b35">🎞️ রিভিউ শর্ট</button>
+<button id="tab2" onclick="showTab(2)" style="background:#444">✨ AI ভিডিও (ফ্রি)</button>
+</div>
+<div id="sec1">
 <p>মুভি সিলেক্ট করো → রেটিং + এক লাইন রিভিউ দাও → <b>"🎬 ভিডিও বানাও"</b> চাপ দাও → ব্রাউজারেই ১৫ সেকেন্ডের ভার্টিকাল শর্ট তৈরি হবে! (পোস্টার slow-zoom + মিউজিকসহ)</p>
 
 <label>🔍 মুভি খুঁজো:</label>
@@ -40,6 +45,31 @@ label{font-weight:bold;color:#ffb38a}
 </div>
 
 <div class="note">📌 প্রথমবার ২০-৩০ সেকেন্ড লাগতে পারে (ভিডিও ইঞ্জিন লোড হয়)। তারপর প্রতিটা ভিডিও ~১ মিনিটে তৈরি হবে। 🎵 মিউজিক: "Colossal" by Aylex — TikTok-এ আপলোডের সময় ক্যাপশনে ক্রেডিট দিও।</div>
+</div><!-- /sec1 -->
+
+<div id="sec2" style="display:none">
+<p>✨ <b>প্রম্পট লিখো → ফ্রি AI ভিডিও পাও!</b> (ওপেন-সোর্স LTX-Video মডেল — কোনো টাকা লাগবে না)</p>
+<label>✏️ ভিডিও প্রম্পট (ইংরেজিতে লিখো):</label>
+<textarea id="aiprompt" rows="3" style="width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #444;background:#16162a;color:#eee;font-size:16px;box-sizing:border-box" placeholder="যেমন: A dragon flying over a burning castle at sunset, cinematic"></textarea>
+<label>⏱️ দৈর্ঘ্য:</label>
+<input id="aidur" type="number" value="5" min="2" max="8" step="1" style="width:100px">
+<span style="color:#888">সেকেন্ড (সর্বোচ্চ ৮)</span>
+<br><button id="aibtn" onclick="makeAIVideo()">✨ AI ভিডিও বানাও (ফ্রি)</button>
+<div class="progress"><div id="aibar"></div></div>
+<div id="aistatus" style="background:#14141f;border:1px solid #2a2a3a;border-radius:8px;padding:12px;margin:12px 0;font-size:14px">প্রস্তুত ✅</div>
+<video id="aivideo" controls style="max-width:100%;border-radius:12px;display:none"></video>
+<br><a id="aidl" style="display:none" download="cineworld-ai.mp4"><button style="background:#22aa55">⬇️ AI ভিডিও ডাউনলোড</button></a>
+<div class="note">📌 ফ্রি সার্ভার — লাইনে অপেক্ষা করতে হতে পারে (১-৫ মিনিট)। ব্যস্ত থাকলে পরে আবার চেষ্টা করো।</div>
+</div>
+
+<script>
+function showTab(n){
+  document.getElementById('sec1').style.display=n===1?'block':'none';
+  document.getElementById('sec2').style.display=n===2?'block':'none';
+  document.getElementById('tab1').style.background=n===1?'#ff6b35':'#444';
+  document.getElementById('tab2').style.background=n===2?'#ff6b35':'#444';
+}
+</script>
 
 <script type="module">
 import { FFmpeg } from 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js';
@@ -118,6 +148,42 @@ window.makeVideo=async function(){
     dl.style.display='inline-block';
   }catch(e){
     setStatus('❌ সমস্যা হয়েছে: '+e.message);
+  }
+  btn.disabled=false;
+};
+
+/* ---------- FREE AI VIDEO (LTX-Video via Hugging Face) ---------- */
+import { Client } from 'https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.js';
+let aiClient=null;
+window.makeAIVideo=async function(){
+  const prompt=document.getElementById('aiprompt').value.trim();
+  if(!prompt){document.getElementById('aistatus').textContent='❌ আগে প্রম্পট লিখো!';return;}
+  const btn=document.getElementById('aibtn'); btn.disabled=true;
+  const st=document.getElementById('aistatus'), bar=document.getElementById('aibar');
+  const dur=Math.min(8,Math.max(2,parseInt(document.getElementById('aidur').value)||5));
+  try{
+    st.textContent='⏳ ফ্রি AI সার্ভারে কানেক্ট হচ্ছে...';
+    if(!aiClient) aiClient=await Client.connect('Lightricks/ltx-video-distilled');
+    st.textContent='⏳ ভিডিও বানানো হচ্ছে... লাইনে থাকলে ১-৫ মিনিট লাগতে পারে';
+    bar.style.width='30%';
+    const result=await aiClient.predict('/text_to_video',{
+      prompt: prompt,
+      negative_prompt: 'worst quality, blurry, distorted',
+      input_image_filepath: '', input_video_filepath: '',
+      height_ui: 512, width_ui: 768,
+      mode: 'text-to-video', duration_ui: dur
+    });
+    bar.style.width='90%';
+    const vurl=result.data[0].url;
+    const v=document.getElementById('aivideo');
+    v.src=vurl; v.style.display='block';
+    const dl=document.getElementById('aidl');
+    dl.href=vurl; dl.style.display='inline-block';
+    st.textContent='✅ AI ভিডিও তৈরি! দেখো + ডাউনলোড করো 👇';
+    bar.style.width='100%';
+  }catch(e){
+    st.textContent='❌ সমস্যা: '+(e.message||e)+'. সার্ভার ব্যস্ত থাকতে পারে — একটু পরে আবার চেষ্টা করো।';
+    bar.style.width='0%';
   }
   btn.disabled=false;
 };
