@@ -51,17 +51,26 @@ label{font-weight:bold;color:#ffb38a}
 
 <div id="sec2" style="display:none">
 <p>✨ <b>প্রম্পট লিখো → ফ্রি AI ভিডিও পাও!</b> (ওপেন-সোর্স LTX-Video মডেল — কোনো টাকা লাগবে না)</p>
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+  const t=localStorage.getItem('hf_tok');
+  if(t){const el=document.getElementById('hftoken'); if(el) el.value=t;}
+});
+</script>
 <label>✏️ ভিডিও প্রম্পট (ইংরেজিতে লিখো):</label>
 <textarea id="aiprompt" rows="3" style="width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #444;background:#16162a;color:#eee;font-size:16px;box-sizing:border-box" placeholder="যেমন: A dragon flying over a burning castle at sunset, cinematic"></textarea>
 <label>⏱️ দৈর্ঘ্য:</label>
 <input id="aidur" type="number" value="5" min="2" max="8" step="1" style="width:100px">
 <span style="color:#888">সেকেন্ড (সর্বোচ্চ ৮)</span>
+<br><label>🔑 HF টোকেন (ঐচ্ছিক — ফ্রি কোটা বাড়াতে):</label>
+<input id="hftoken" type="password" placeholder="hf_... (huggingface.co/settings/tokens থেকে ফ্রিতে নাও)" style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #444;background:#16162a;color:#eee;font-size:14px;box-sizing:border-box">
+<div style="font-size:13px;color:#888">💡 ফ্রি অ্যাকাউন্ট খুলে টোকেন দিলে তোমার নিজের GPU কোটা পাবে — "সব সার্ভার ব্যস্ত" সমস্যা কমবে!</div>
 <br><button id="aibtn" onclick="makeAIVideo()">✨ AI ভিডিও বানাও (ফ্রি)</button>
 <div class="progress"><div id="aibar"></div></div>
 <div id="aistatus" style="background:#14141f;border:1px solid #2a2a3a;border-radius:8px;padding:12px;margin:12px 0;font-size:14px">প্রস্তুত ✅</div>
 <video id="aivideo" controls style="max-width:100%;border-radius:12px;display:none"></video>
 <br><a id="aidl" style="display:none" download="cineworld-ai.mp4"><button style="background:#22aa55">⬇️ AI ভিডিও ডাউনলোড</button></a>
-<div class="note">📌 ফ্রি সার্ভার — একটা ব্যস্ত থাকলে অটো পরেরটায় চেষ্টা করবে (LTX-Video → Wan 2.2)। সব ব্যস্ত থাকলে পরে আবার চেষ্টা করো।</div>
+<div class="note">📌 ফ্রি সার্ভার — একটা ব্যস্ত থাকলে অটো পরেরটায় চেষ্টা করবে (LTX-Video → Wan 2.2 → CogVideoX)। 🔑 <b>স্থায়ী সমাধান:</b> huggingface.co-তে ফ্রি অ্যাকাউন্ট খুলে <a href="https://huggingface.co/settings/tokens" target="_blank" style="color:#ff6b35">এখান থেকে টোকেন</a> নিয়ে উপরে বসাও — তাহলে তোমার নিজের GPU কোটা পাবে, "সার্ভার ব্যস্ত" আর দেখাবে না!</div>
 </div>
 
 <script>
@@ -253,10 +262,15 @@ const VIDEO_PROVIDERS=[
 ];
 let aiClients={};
 
-async function tryProvider(pv,prompt,dur,st){
+async function tryProvider(pv,prompt,dur,st,token){
   st.textContent='⏳ '+pv.name+' সার্ভারে চেষ্টা করছি...';
-  if(!aiClients[pv.space]) aiClients[pv.space]=await Client.connect(pv.space);
-  const result=await aiClients[pv.space].predict(pv.ep, pv.build(prompt,dur));
+  const ck=pv.space+(token?'#tok':'');
+  if(!aiClients[ck]){
+    aiClients[ck]=token
+      ? await Client.connect(pv.space,{hf_token:token})
+      : await Client.connect(pv.space);
+  }
+  const result=await aiClients[ck].predict(pv.ep, pv.build(prompt,dur));
   let vurl=null; const d0=result.data[0];
   if(typeof d0==='string') vurl=d0;
   else if(d0&&d0.url) vurl=d0.url;
@@ -275,12 +289,14 @@ window.makeAIVideo=async function(){
   const btn=document.getElementById('aibtn'); btn.disabled=true;
   const st=document.getElementById('aistatus'), bar=document.getElementById('aibar');
   const dur=Math.min(8,Math.max(2,parseInt(document.getElementById('aidur').value)||5));
+  const token=document.getElementById('hftoken').value.trim()||null;
+  if(token) localStorage.setItem('hf_tok',token);
   let lastErr=null;
   for(let i=0;i<VIDEO_PROVIDERS.length;i++){
     const pv=VIDEO_PROVIDERS[i];
     try{
       bar.style.width=((i+1)/(VIDEO_PROVIDERS.length+1)*80)+'%';
-      const vurl=await tryProvider(pv,prompt,dur,st);
+      const vurl=await tryProvider(pv,prompt,dur,st,token);
       const v=document.getElementById('aivideo');
       v.src=vurl; v.style.display='block';
       const dl=document.getElementById('aidl');
