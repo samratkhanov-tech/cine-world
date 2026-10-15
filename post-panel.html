@@ -45,6 +45,7 @@ header p{color:#9aa3b8;margin-top:6px}
 .site input{width:22px;height:22px;flex-shrink:0;accent-color:#e50914}
 .site .nm{flex:1;font-size:16px;font-weight:600}
 .site .nm small{display:block;color:#8b93a9;font-weight:400;font-size:12px}
+.site .nm small.post-spec{color:#7dd3fc;font-size:11px;margin-top:2px}
 .badges{display:flex;gap:6px;flex-shrink:0}
 .b{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap}
 .ad-yes{background:#123d22;color:#5dff8f}.ad-no{background:#3d1212;color:#ff8f8f}
@@ -154,26 +155,27 @@ footer{text-align:center;color:#5a6378;font-size:12px;padding:20px}
 </div>
 
 <script>
-// ===== সাইট তালিকা (ad: এড সাপোর্ট | linkRule: 'comment' = কমেন্টে লিংক, 'button' = বাটনে লিংক) =====
+// ===== সাইট তালিকা (ad: এড সাপোর্ট | linkRule: 'comment' = কমেন্টে লিংক, 'button' = বাটনে লিংক | post: ওই সাইটে কী ধরনের পোস্ট যাবে) =====
 const SITES=[
- {id:'github',   name:'GitHub Pages',  desc:'SEO রিভিউ পেজ',            ad:true,  linkRule:'button'},
- {id:'blogger',  name:'Blogger',       desc:'cine-world-reviews',       ad:true,  linkRule:'button'},
- {id:'facebook', name:'Facebook Page', desc:'পোস্টে লিংক নিষেধ',         ad:false, linkRule:'comment'},
- {id:'medium',   name:'Medium',        desc:'আর্টিকেল',                 ad:false, linkRule:'button'},
- {id:'x',        name:'X (Twitter)',   desc:'@SamratKhanjbpk',          ad:false, linkRule:'button'},
- {id:'letterboxd',name:'Letterboxd',   desc:'কমিউনিটি রিভিউ',           ad:false, linkRule:'comment'},
- {id:'reddit',   name:'Reddit',        desc:'u/CineWorldMovies ✅',       ad:false, linkRule:'button'},
- {id:'quora',    name:'Quora',         desc:'মুভি Q&A',                 ad:false, linkRule:'button'},
- {id:'eventbrite', name:'Eventbrite',  desc:'Movie Night ইভেন্ট',      ad:false, linkRule:'button'},
- {id:'ph',       name:'Product Hunt',  desc:'Cine World launch 🚀',    ad:false, linkRule:'button'},
- {id:'wp',       name:'WordPress',     desc:'cineworldmoviereviews ✅', ad:true,  linkRule:'button'},
+ {id:'github',   name:'GitHub Pages',  desc:'SEO রিভিউ পেজ',            ad:true,  linkRule:'button', post:'📄 SEO রিভিউ পেজ (HTML) — পোস্টার + রিভিউ + এড কোড + লিংক বাটন'},
+ {id:'blogger',  name:'Blogger',       desc:'cine-world-reviews',       ad:true,  linkRule:'button', post:'📝 ব্লগ পোস্ট (API) — HTML রিভিউ + এড কোড'},
+ {id:'facebook', name:'Facebook Page', desc:'পোস্টে লিংক নিষেধ',         ad:false, linkRule:'comment', post:'📸 ফটো পোস্ট — পোস্টার ছবি + বাংলা ক্যাপশন, লিংক প্রথম কমেন্টে'},
+ {id:'medium',   name:'Medium',        desc:'আর্টিকেল',                 ad:false, linkRule:'button', post:'📰 আর্টিকেল — লং-ফর্ম রিভিউ + লিংক বাটন'},
+ {id:'x',        name:'X (Twitter)',   desc:'@SamratKhanjbpk',          ad:false, linkRule:'button', post:'🐦 পোস্ট — ছোট রিভিউ + পোস্টার + লিংক'},
+ {id:'letterboxd',name:'Letterboxd',   desc:'কমিউনিটি রিভিউ',           ad:false, linkRule:'comment', post:'🎬 কমিউনিটি রিভিউ — রেটিং + রিভিউ, লিংক কমেন্টে'},
+ {id:'reddit',   name:'Reddit',        desc:'u/CineWorldMovies ✅',       ad:false, linkRule:'button', post:'💬 টেক্সট পোস্ট — রিভিউ + লিংক'},
+ {id:'quora',    name:'Quora',         desc:'মুভি Q&A',                 ad:false, linkRule:'button', post:'❓ Q&A উত্তর — মুভি-সংক্রান্ত প্রশ্নের উত্তরে রিভিউ + লিংক'},
+ {id:'eventbrite', name:'Eventbrite',  desc:'Movie Night ইভেন্ট',      ad:false, linkRule:'button', post:'🎟️ ইভেন্ট — Movie Night ফ্যান ডিসকাশন ইভেন্ট'},
+ {id:'ph',       name:'Product Hunt',  desc:'Cine World launch 🚀',    ad:false, linkRule:'button', post:'🚀 প্রোডাক্ট পোস্ট — Cine World প্রোডাক্ট নিয়ে (মুভি রিভিউ নয়!)'},
+ {id:'wp',       name:'WordPress',     desc:'cineworldmoviereviews ✅', ad:true,  linkRule:'button', post:'📝 WP পোস্ট — হটলিংক পোস্টার + রিভিউ + এড কোড'},
+ {id:'wix',      name:'Wix',           desc:'cine-world ওয়েবসাইট ✅',   ad:false, linkRule:'button', post:'🌐 Wix ব্লগ পোস্ট — রিভিউ আর্টিকেল + লিংক বাটন'},
 ];
 // ================================================================================================
 const box=document.getElementById('sites');
 SITES.forEach(s=>{
   const d=document.createElement('div');d.className='site';
   d.innerHTML=`<input type="checkbox" id="s_${s.id}" checked>
-   <span class="nm">${s.name}<small>${s.desc}</small></span>
+   <span class="nm">${s.name}<small>${s.desc}</small><small class="post-spec">${s.post}</small></span>
    <span class="badges">
      <span class="b ${s.ad?'ad-yes':'ad-no'}">${s.ad?'🟢 এড':'🔴 এড নেই'}</span>
      <span class="b ${s.linkRule==='comment'?'lnk-c':'lnk-b'}">${s.linkRule==='comment'?'💬 কমেন্টে লিংক':'🔘 বাটনে লিংক'}</span>
@@ -260,14 +262,19 @@ function selSites(){
 function siteLine(s){
   return s.name+(s.ad?' [এডসহ]':'')+(s.linkRule==='comment'?' [লিংক কমেন্টে]':' [লিংক বাটনে]');
 }
+function siteSpec(s){
+  return `• ${s.name} → ${s.post}`;
+}
 function gen(){
   const sel=selSites();
   if(!sel.length){alert('কমপক্ষে ১টা সাইট সিলেক্ট করো!');return}
   const site='https://samratkhanov-tech.github.io/cine-world/';
   const ab=buildAdBlock();
   document.getElementById('cmd').textContent=
-`🎬 POST${selectedMovie?'\n🎞️ মুভি: '+selectedMovie.t+(selectedMovie.y?' ('+selectedMovie.y+')':''):''}
+`🎬 POST${selectedMovie?'\n🎞️ মুভি: '+selectedMovie.t+(selectedMovie.y?' ('+selectedMovie.y+')':''):'')}
 সাইট: ${sel.map(siteLine).join(', ')}
+📌 প্রতিটা সাইটে কী পোস্ট করতে হবে:
+${sel.map(siteSpec).join('\n')}
 ওয়েবসাইট লিংক (প্রতিটা পোস্টে): ${site}
 📡 এড নেটওয়ার্ক: ${ab.label}
 ${ab.filledLine}
@@ -355,7 +362,7 @@ function copyBatchCmd(){
   const site='https://samratkhanov-tech.github.io/cine-world/';
   const ab=buildAdBlock();
   const n=batchList.length;
-  const cmd=`🎬 BATCH-POST (${n}টা মুভি × ${sel.length}টা সাইট = ${n*sel.length}টা পোস্ট)\n📊 সাইট × পোস্ট সংখ্যা:\n${sel.map(s=>`- ${siteLine(s)}: ${n}টা পোস্ট`).join('\n')}\n🎞️ মুভি (${n}টা):\n${batchList.map((b,i)=>(i+1)+'. '+b.t+(b.y?' ('+b.y+')':'')).join('\n')}\nওয়েবসাইট লিংক (প্রতিটা পোস্টে): ${site}\n📡 এড নেটওয়ার্ক: ${ab.label}\n${ab.filledLine}\n${ab.adBlock}`;
+  const cmd=`🎬 BATCH-POST (${n}টা মুভি × ${sel.length}টা সাইট = ${n*sel.length}টা পোস্ট)\n📊 সাইট × পোস্ট সংখ্যা:\n${sel.map(s=>`- ${siteLine(s)}: ${n}টা পোস্ট`).join('\n')}\n📌 প্রতিটা সাইটে কী পোস্ট করতে হবে:\n${sel.map(siteSpec).join('\n')}\n🎞️ মুভি (${n}টা):\n${batchList.map((b,i)=>(i+1)+'. '+b.t+(b.y?' ('+b.y+')':'')).join('\n')}\nওয়েবসাইট লিংক (প্রতিটা পোস্টে): ${site}\n📡 এড নেটওয়ার্ক: ${ab.label}\n${ab.filledLine}\n${ab.adBlock}`;
   navigator.clipboard.writeText(cmd).then(()=>alert('ব্যাচ কমান্ড কপি হয়েছে! চ্যাটে পাঠাও ✅'));
 }
 // ===== 📝 Blogger → Facebook ক্রস-পোস্ট =====
